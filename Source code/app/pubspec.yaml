@@ -18,8 +18,14 @@ dependencies:
   intl: ^0.19.0
   qr_flutter: ^4.1.0
   share_plus: ^10.0.0
+<<<<<<< HEAD
   video_player: ^2.9.2
   http_parser: ^4.1.2
+=======
+  flutter_map: ^8.3.0
+  latlong2: ^0.9.1
+  url_launcher: ^6.3.2
+>>>>>>> dan/main
 
 dev_dependencies:
   flutter_test:

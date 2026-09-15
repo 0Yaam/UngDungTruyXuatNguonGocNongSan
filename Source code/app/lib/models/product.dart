@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import 'package:app/models/live_camera.dart';
+=======
+import 'package:app/models/farming_area.dart';
+>>>>>>> dan/main
 
 class Product {
   final String id;
@@ -13,8 +17,14 @@ class Product {
   final List<String> images;
   final List<LiveCamera> liveCameras;
   final String? onChainBatchId;
+<<<<<<< HEAD
   final String status; // draft | active | completed | recalled
   final Map<String, dynamic>? farmingArea;
+=======
+  final String? batchTxHash;
+  final String status; // draft | active | completed
+  final FarmingArea? farmingArea;
+>>>>>>> dan/main
   final DateTime? cultivationTime;
   final Map<String, dynamic>? createdBy;
   final DateTime? createdAt;
@@ -35,6 +45,7 @@ class Product {
     required this.images,
     this.liveCameras = const [],
     this.onChainBatchId,
+    this.batchTxHash,
     required this.status,
     this.farmingArea,
     this.cultivationTime,
@@ -55,10 +66,19 @@ class Product {
   /// Nhãn hiển thị trạng thái
   String get statusLabel {
     switch (status) {
+<<<<<<< HEAD
       case 'active': return 'Đang sản xuất';
       case 'completed': return 'Hoàn thành';
       case 'recalled': return 'Đã thu hồi';
       default: return 'Nháp';
+=======
+      case 'active':
+        return 'Đang sản xuất';
+      case 'completed':
+        return 'Hoàn thành';
+      default:
+        return 'Nháp';
+>>>>>>> dan/main
     }
   }
 
@@ -86,8 +106,11 @@ class Product {
         .map(LiveCamera.fromJson)
         .toList(),
     onChainBatchId: json['onChainBatchId'] as String?,
+    batchTxHash: json['batchTxHash'] as String?,
     status: json['status'] as String? ?? 'draft',
-    farmingArea: json['farming_area'] as Map<String, dynamic>?,
+    farmingArea: json['farming_area'] is Map<String, dynamic>
+        ? FarmingArea.fromJson(json['farming_area'] as Map<String, dynamic>)
+        : null,
     cultivationTime: json['cultivation_time'] != null
         ? DateTime.tryParse(json['cultivation_time'] as String)
         : null,

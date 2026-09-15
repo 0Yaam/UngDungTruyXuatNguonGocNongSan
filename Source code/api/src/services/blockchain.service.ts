@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { ethers } from 'ethers';
 import { getContract, getReadonlyContract } from '../config/blockchain';
 import { ACTION_TYPES, ActionType } from '../models/TraceEvent';
@@ -134,3 +135,16 @@ export const assertContractDeployed = async (): Promise<void> => {
     );
   }
 };
+=======
+export {
+  batchExistsOnChain,
+  createBatchOnChain,
+  getBatchHistoryFromChain as getHistoryFromChain,
+  getBatchBlockchainSnapshot,
+  getDecodedTransactionFromChain,
+  getIndexedTransactionsForBatch,
+  hashEventData,
+  recordActionOnChain,
+  verifyActionOnChain,
+} from './blockchain';
+>>>>>>> dan/main

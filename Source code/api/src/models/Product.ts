@@ -28,10 +28,16 @@ export interface IProduct {
   qrcode?: string;
   status: 'draft' | 'active' | 'completed' | 'recalled';
   onChainBatchId?: string;
+  batchTxHash?: string;
   created_by: Types.ObjectId;
+<<<<<<< HEAD
   isDeleted: boolean;
   deletedAt?: Date;
   deleted_by?: Types.ObjectId;
+=======
+  createdAt?: Date;
+  updatedAt?: Date;
+>>>>>>> dan/main
 }
 
 const productSchema = new Schema<IProduct>(
@@ -149,6 +155,9 @@ const productSchema = new Schema<IProduct>(
       default: 'draft',
     },
     onChainBatchId: {
+      type: String,
+    },
+    batchTxHash: {
       type: String,
     },
     created_by: {

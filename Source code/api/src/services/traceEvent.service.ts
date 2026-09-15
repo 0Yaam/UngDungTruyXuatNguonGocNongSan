@@ -7,14 +7,18 @@ import {
   UnauthorizedError,
 } from '../utils/errors';
 import {
+  getBatchHistoryFromChain,
   recordActionOnChain,
-  getHistoryFromChain,
   verifyActionOnChain,
   hashEventData,
   createBatchOnChain,
   batchExistsOnChain,
+<<<<<<< HEAD
   assertContractDeployed,
 } from './blockchain.service';
+=======
+} from './blockchain';
+>>>>>>> dan/main
 import { notifyTraceEventAdded } from './notification.service';
 import env from '../config/env';
 import QualityInspection from '../models/QualityInspection';
@@ -23,11 +27,28 @@ import SupplyChainRecord from '../models/SupplyChainRecord';
 const isBlockchainConfigured = () =>
   !!(env.CONTRACT_ADDRESS && env.BLOCKCHAIN_PRIVATE_KEY);
 
+<<<<<<< HEAD
 const blockchainErrorMessage = (error: any): string => {
   const rawMessage = String(
     error?.shortMessage || error?.reason || error?.message || 'Lỗi blockchain không xác định'
   );
   const normalized = rawMessage.toLowerCase();
+=======
+const BLOCKCHAIN_READ_TIMEOUT_MS = 2500;
+
+const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number) =>
+  Promise.race<T>([
+    promise,
+    new Promise<T>((_, reject) => {
+      setTimeout(() => reject(new Error(`Timeout after ${timeoutMs}ms`)), timeoutMs);
+    }),
+  ]);
+
+const normalizeImages = (
+  images?: Array<string | { path?: string; filename?: string }>
+) => {
+  if (!Array.isArray(images)) return [];
+>>>>>>> dan/main
 
   if (
     error?.code === 'ECONNREFUSED' ||
@@ -312,7 +333,10 @@ export const getFullTrace = async (productId: string) => {
 
   let onChain = null;
   try {
-    onChain = await getHistoryFromChain(product._id.toString());
+    onChain = await withTimeout(
+      getBatchHistoryFromChain(product._id.toString()),
+      BLOCKCHAIN_READ_TIMEOUT_MS
+    );
   } catch (error: any) {
     console.error('Blockchain getHistory failed:', error.message);
   }

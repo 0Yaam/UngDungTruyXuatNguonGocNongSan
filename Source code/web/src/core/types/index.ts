@@ -1,6 +1,10 @@
 export interface User {
+<<<<<<< HEAD
   _id?: string;
   userId?: string;
+=======
+  _id: string;
+>>>>>>> dan/main
   name?: string;
   first_name?: string;
   last_name?: string;
@@ -63,6 +67,7 @@ export interface Product {
   qrcode?: string;
   status: 'draft' | 'active' | 'completed' | 'recalled';
   onChainBatchId?: string;
+  batchTxHash?: string;
   created_by: string | User;
   isDeleted?: boolean;
   deletedAt?: string;

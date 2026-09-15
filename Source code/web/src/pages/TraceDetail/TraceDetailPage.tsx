@@ -1,24 +1,58 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { traceEventApi } from '../../core/api/traceEvent.api';
-import type { FullTrace, VerifyResult } from '../../core/types';
 import BlockchainBadge from '../../components/BlockchainBadge/BlockchainBadge';
+import FarmingAreaMap from '../../components/Map/FarmingAreaMap';
 import QRCodeGenerator from '../../components/QRCode/QRCodeGenerator';
+<<<<<<< HEAD
 import LiveStreamSection from '../../components/LiveStream/LiveStreamSection';
 import { colors, spacing, borderRadius, shadows, typography } from '../../core/theme';
 import { useAuth } from '../../core/hooks/useAuth';
+=======
+import { traceEventApi } from '../../core/api/traceEvent.api';
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacing,
+  typography,
+} from '../../core/theme';
+import type { FullTrace, TraceEvent, VerifyResult } from '../../core/types';
+>>>>>>> dan/main
 
-const eventTypeConfig: Record<string, { label: string; icon: string; color: string }> = {
-  SEEDING: { label: 'Gieo hạt', icon: '🌱', color: '#16a34a' },
-  FERTILIZING: { label: 'Bón phân', icon: '🧪', color: '#ca8a04' },
-  WATERING: { label: 'Tưới nước', icon: '💧', color: '#0284c7' },
-  PEST_CONTROL: { label: 'Kiểm soát sâu bệnh', icon: '🐛', color: '#dc2626' },
-  HARVESTING: { label: 'Thu hoạch', icon: '🌾', color: '#ea580c' },
-  PACKAGING: { label: 'Đóng gói', icon: '📦', color: '#7c3aed' },
-  SHIPPING: { label: 'Vận chuyển', icon: '🚚', color: '#0891b2' },
+const pagePanel: React.CSSProperties = {
+  background: colors.surface,
+  borderRadius: borderRadius.xl,
+  border: `1px solid ${colors.neutral[200]}`,
+  boxShadow: shadows.md,
+};
+
+const eventTypeConfig: Record<
+  string,
+  { label: string; color: string; soft: string }
+> = {
+  SEEDING: { label: 'Gieo hat', color: '#16A34A', soft: '#ECFDF3' },
+  FERTILIZING: { label: 'Bon phan', color: '#CA8A04', soft: '#FEF3C7' },
+  WATERING: { label: 'Tuoi nuoc', color: '#0284C7', soft: '#E0F2FE' },
+  PEST_CONTROL: { label: 'Phong tru sau benh', color: '#DC2626', soft: '#FEE2E2' },
+  HARVESTING: { label: 'Thu hoach', color: '#EA580C', soft: '#FFEDD5' },
+  PACKAGING: { label: 'Dong goi', color: '#7C3AED', soft: '#F3E8FF' },
+  SHIPPING: { label: 'Van chuyen', color: '#0891B2', soft: '#CCFBF1' },
+};
+
+const certTone: Record<
+  string,
+  { bg: string; text: string; border: string }
+> = {
+  VietGAP: { bg: '#DCFCE7', text: '#166534', border: '#86EFAC' },
+  GlobalGAP: { bg: '#DBEAFE', text: '#1D4ED8', border: '#93C5FD' },
+  Organic: { bg: '#FEF3C7', text: '#92400E', border: '#FCD34D' },
+  HACCP: { bg: '#FCE7F3', text: '#BE185D', border: '#F9A8D4' },
+  ISO22000: { bg: '#E0E7FF', text: '#4338CA', border: '#A5B4FC' },
+  Other: { bg: '#F3F4F6', text: '#374151', border: '#D1D5DB' },
 };
 
 const statusLabel: Record<string, string> = {
+<<<<<<< HEAD
   draft: 'Nháp',
   active: 'Đang theo dõi',
   completed: 'Hoàn tất',
@@ -37,6 +71,11 @@ const certTypeColors: Record<string, { bg: string; text: string; border: string 
   HACCP: { bg: '#fce7f3', text: '#be185d', border: '#f9a8d4' },
   ISO22000: { bg: '#e0e7ff', text: '#4338ca', border: '#a5b4fc' },
   Other: { bg: '#f3f4f6', text: '#374151', border: '#d1d5db' },
+=======
+  draft: 'Nhap',
+  active: 'Dang theo doi',
+  completed: 'Hoan tat',
+>>>>>>> dan/main
 };
 
 const TraceDetailPage: React.FC = () => {
@@ -45,18 +84,45 @@ const TraceDetailPage: React.FC = () => {
   const [trace, setTrace] = useState<FullTrace | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [verifyResults, setVerifyResults] = useState<Record<string, VerifyResult>>({});
+  const [verifyResults, setVerifyResults] = useState<
+    Record<string, VerifyResult>
+  >({});
   const [verifying, setVerifying] = useState<string | null>(null);
   const [retrying, setRetrying] = useState<string | null>(null);
   const [retryError, setRetryError] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (!productId) return;
+    if (!productId) {
+      setLoading(false);
+      setError('Khong tim thay ma san pham.');
+      return;
+    }
+
+    let mounted = true;
+    setLoading(true);
+    setError('');
+
     traceEventApi
       .getFullTrace(productId)
-      .then((res) => setTrace(res.data))
-      .catch((err) => setError(err.message || 'Không tìm thấy thông tin truy xuất'))
-      .finally(() => setLoading(false));
+      .then((response) => {
+        if (mounted) {
+          setTrace(response.data);
+        }
+      })
+      .catch((err: any) => {
+        if (mounted) {
+          setError(err?.message || 'Khong tim thay thong tin truy xuat');
+        }
+      })
+      .finally(() => {
+        if (mounted) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
   }, [productId]);
 
   const handleVerify = useCallback(async (eventId: string) => {
@@ -67,12 +133,14 @@ const TraceDetailPage: React.FC = () => {
     } catch {
       setVerifyResults((prev) => ({
         ...prev,
-        [eventId]: { verified: false, dataHash: '', event: {} as any },
+        [eventId]: { verified: false, dataHash: '', event: {} as TraceEvent },
       }));
+    } finally {
+      setVerifying(null);
     }
-    setVerifying(null);
   }, []);
 
+<<<<<<< HEAD
   const handleRetry = useCallback(async (eventId: string) => {
     setRetrying(eventId);
     setRetryError((prev) => ({ ...prev, [eventId]: '' }));
@@ -97,31 +165,71 @@ const TraceDetailPage: React.FC = () => {
       setRetrying(null);
     }
   }, []);
+=======
+  const overview = useMemo(() => {
+    if (!trace) {
+      return null;
+    }
+
+    return {
+      totalEvents: trace.events.length,
+      confirmedEvents: trace.events.filter(
+        (item) => item.onChainStatus === 'confirmed'
+      ).length,
+      certifications: trace.product.farming_area?.certifications?.length || 0,
+    };
+  }, [trace]);
+>>>>>>> dan/main
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 48, marginBottom: spacing[4] }}>🔍</div>
-          <p style={{ color: colors.textSecondary, fontSize: typography.sizes.lg }}>Đang tải thông tin truy xuất...</p>
+      <div
+        style={{
+          ...pagePanel,
+          padding: spacing[8],
+          textAlign: 'center',
+          minHeight: 320,
+          display: 'grid',
+          placeItems: 'center',
+        }}
+      >
+        <div>
+          <div style={{ fontSize: 34, marginBottom: spacing[3] }}>Dang tai...</div>
+          <p style={{ margin: 0, color: colors.textSecondary }}>
+            He thong dang lay du lieu truy xuat va blockchain.
+          </p>
         </div>
       </div>
     );
   }
 
-  if (error || !trace) {
+  if (error || !trace || !overview) {
     return (
-      <div style={{ 
-        maxWidth: 600, margin: '0 auto', padding: spacing[8], textAlign: 'center',
-        background: '#fef2f2', borderRadius: borderRadius.xl, marginTop: spacing[8]
-      }}>
-        <div style={{ fontSize: 48, marginBottom: spacing[4] }}>❌</div>
-        <h2 style={{ color: '#b91c1c', margin: 0, marginBottom: spacing[2] }}>Không tìm thấy</h2>
-        <p style={{ color: '#991b1b' }}>{error || 'Không có dữ liệu truy xuất cho sản phẩm này'}</p>
+      <div
+        style={{
+          ...pagePanel,
+          padding: spacing[8],
+          textAlign: 'center',
+          background: '#FEF2F2',
+        }}
+      >
+        <h2
+          style={{
+            margin: 0,
+            marginBottom: spacing[2],
+            color: '#B91C1C',
+          }}
+        >
+          Khong tim thay
+        </h2>
+        <p style={{ margin: 0, color: '#991B1B' }}>
+          {error || 'Khong co du lieu truy xuat cho san pham nay.'}
+        </p>
       </div>
     );
   }
 
+<<<<<<< HEAD
   const { product, events, qualityInspections = [], supplyChainRecords = [], onChain } = trace;
   const farmingArea = product.farming_area as any;
   const certifications = farmingArea?.certifications || [];
@@ -138,94 +246,132 @@ const TraceDetailPage: React.FC = () => {
         boxShadow: shadows.lg,
       }}>
         <div style={{ display: 'flex', gap: spacing[8], alignItems: 'flex-start', flexWrap: 'wrap' }}>
+=======
+  const { product, events, onChain } = trace;
+  const farmingArea = product.farming_area;
+  const certifications = farmingArea?.certifications || [];
+
+  return (
+    <div style={{ display: 'grid', gap: spacing[6], maxWidth: 1120, margin: '0 auto' }}>
+      <section
+        style={{
+          ...pagePanel,
+          padding: spacing[8],
+          background:
+            'radial-gradient(circle at top right, rgba(34,197,94,0.16), transparent 28%), linear-gradient(135deg, #14532D 0%, #166534 52%, #22C55E 100%)',
+          color: colors.surface,
+        }}
+      >
+        <div style={{ display: 'flex', gap: spacing[6], flexWrap: 'wrap', alignItems: 'flex-start' }}>
+>>>>>>> dan/main
           <div style={{ flex: 1, minWidth: 300 }}>
-            <div style={{ 
-              display: 'inline-block',
-              background: 'rgba(255,255,255,0.2)',
-              padding: `${spacing[1]} ${spacing[4]}`,
-              borderRadius: borderRadius.full,
-              fontSize: typography.sizes.sm,
-              fontWeight: typography.weights.medium,
-              marginBottom: spacing[3],
-            }}>
-              {product.type === 'Plant' ? '🌱 Trồng trọt' : '🐔 Chăn nuôi'} • {product.category}
+            <div
+              style={{
+                display: 'inline-flex',
+                borderRadius: borderRadius.full,
+                padding: `${spacing[2]} ${spacing[3]}`,
+                background: 'rgba(255,255,255,0.16)',
+                fontSize: typography.sizes.sm,
+                fontWeight: typography.weights.semibold,
+                marginBottom: spacing[4],
+              }}
+            >
+              {product.type === 'Plant' ? 'Trong trot' : 'Chan nuoi'} · {product.category}
             </div>
-            
-            <h1 style={{ 
-              margin: 0, 
-              fontSize: typography.sizes['3xl'], 
-              fontWeight: typography.weights.bold,
-              marginBottom: spacing[3],
-            }}>
+
+            <h1
+              style={{
+                margin: 0,
+                fontSize: typography.sizes['3xl'],
+                fontWeight: typography.weights.bold,
+                marginBottom: spacing[3],
+              }}
+            >
               {product.name}
             </h1>
-            
+
             {product.description && (
-              <p style={{ 
-                margin: 0, 
-                opacity: 0.9, 
-                fontSize: typography.sizes.base,
-                lineHeight: 1.6,
-                marginBottom: spacing[4],
-              }}>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: typography.sizes.base,
+                  lineHeight: 1.75,
+                  opacity: 0.94,
+                  marginBottom: spacing[4],
+                }}
+              >
                 {product.description}
               </p>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: spacing[4], marginTop: spacing[4] }}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: spacing[3],
+              }}
+            >
               <div>
-                <div style={{ opacity: 0.7, fontSize: typography.sizes.sm, marginBottom: spacing[1] }}>Xuất xứ</div>
-                <div style={{ fontWeight: typography.weights.semibold }}>📍 {product.origin}</div>
+                <div style={{ fontSize: typography.sizes.xs, opacity: 0.78 }}>
+                  Xuat xu
+                </div>
+                <div style={{ fontWeight: typography.weights.semibold }}>
+                  {product.origin}
+                </div>
               </div>
               <div>
-                <div style={{ opacity: 0.7, fontSize: typography.sizes.sm, marginBottom: spacing[1] }}>Trạng thái</div>
-                <div style={{ 
-                  display: 'inline-block',
-                  background: 'rgba(255,255,255,0.2)',
-                  padding: `${spacing[1]} ${spacing[3]}`,
-                  borderRadius: borderRadius.md,
-                  fontWeight: typography.weights.semibold,
-                  fontSize: typography.sizes.sm,
-                }}>
+                <div style={{ fontSize: typography.sizes.xs, opacity: 0.78 }}>
+                  Trang thai
+                </div>
+                <div style={{ fontWeight: typography.weights.semibold }}>
                   {statusLabel[product.status] || product.status}
                 </div>
               </div>
               <div style={{ gridColumn: '1 / -1' }}>
-                <div style={{ opacity: 0.7, fontSize: typography.sizes.sm, marginBottom: spacing[1] }}>Mã truy xuất</div>
-                <div style={{ 
-                  fontFamily: 'monospace', 
-                  fontSize: typography.sizes.xs,
-                  background: 'rgba(0,0,0,0.2)',
-                  padding: `${spacing[2]} ${spacing[3]}`,
-                  borderRadius: borderRadius.md,
-                  wordBreak: 'break-all',
-                }}>
+                <div style={{ fontSize: typography.sizes.xs, opacity: 0.78 }}>
+                  Ma truy xuat
+                </div>
+                <div
+                  style={{
+                    marginTop: spacing[1],
+                    fontFamily: typography.fontFamilyMono,
+                    fontSize: typography.sizes.xs,
+                    background: 'rgba(0,0,0,0.18)',
+                    borderRadius: borderRadius.lg,
+                    padding: `${spacing[2]} ${spacing[3]}`,
+                    wordBreak: 'break-all',
+                  }}
+                >
                   {product._id}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* QR Code */}
-          <div style={{ 
-            background: 'white', 
-            borderRadius: borderRadius.xl, 
-            padding: spacing[4],
-            boxShadow: shadows.md,
-          }}>
+          <div
+            style={{
+              ...pagePanel,
+              padding: spacing[4],
+              background: colors.surface,
+              minWidth: 220,
+            }}
+          >
             <QRCodeGenerator productId={product._id} productName={product.name} />
-            <p style={{ 
-              textAlign: 'center', 
-              margin: `${spacing[2]} 0 0`, 
-              color: colors.textSecondary,
-              fontSize: typography.sizes.xs,
-            }}>
-              Quét để xem truy xuất
+            <p
+              style={{
+                margin: `${spacing[2]} 0 0`,
+                textAlign: 'center',
+                color: colors.textSecondary,
+                fontSize: typography.sizes.xs,
+              }}
+            >
+              Quet de xem truy xuat tren web
             </p>
           </div>
         </div>
-      </div>
+      </section>
 
+<<<<<<< HEAD
       <LiveStreamSection cameras={product.live_cameras} />
 
       {supplyChainRecords.length > 0 && (
@@ -295,115 +441,214 @@ const TraceDetailPage: React.FC = () => {
                   Thông tin nơi sản xuất
                 </p>
               </div>
+=======
+      <section
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: spacing[4],
+        }}
+      >
+        {[
+          {
+            label: 'Tong su kien',
+            value: `${overview.totalEvents}`,
+            tone: colors.primary[50],
+            text: colors.primary[700],
+          },
+          {
+            label: 'Da len blockchain',
+            value: `${overview.confirmedEvents}`,
+            tone: '#DBEAFE',
+            text: '#1D4ED8',
+          },
+          {
+            label: 'Chung nhan',
+            value: `${overview.certifications}`,
+            tone: '#FEF3C7',
+            text: '#92400E',
+          },
+        ].map((item) => (
+          <div
+            key={item.label}
+            style={{
+              ...pagePanel,
+              padding: spacing[5],
+              background: item.tone,
+            }}
+          >
+            <div
+              style={{
+                color: colors.textSecondary,
+                fontSize: typography.sizes.xs,
+                marginBottom: spacing[2],
+              }}
+            >
+              {item.label}
+>>>>>>> dan/main
             </div>
-            
+            <div
+              style={{
+                fontSize: typography.sizes['2xl'],
+                fontWeight: typography.weights.bold,
+                color: item.text,
+              }}
+            >
+              {item.value}
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <section
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gap: spacing[5],
+        }}
+      >
+        {farmingArea && (
+          <div style={{ ...pagePanel, padding: spacing[5], display: 'grid', gap: spacing[4] }}>
+            <div>
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: typography.sizes.xl,
+                  fontWeight: typography.weights.bold,
+                }}
+              >
+                Vung canh tac
+              </h2>
+              <p
+                style={{
+                  margin: `${spacing[2]} 0 0`,
+                  color: colors.textSecondary,
+                  fontSize: typography.sizes.sm,
+                }}
+              >
+                Ban do, dia chi va thong tin chu so huu
+              </p>
+            </div>
+
             <div style={{ display: 'grid', gap: spacing[3] }}>
               <div>
-                <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary, marginBottom: spacing[1] }}>Tên vùng</div>
-                <div style={{ fontWeight: typography.weights.medium }}>{farmingArea.name}</div>
+                <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary }}>
+                  Ten vung
+                </div>
+                <div style={{ fontWeight: typography.weights.semibold }}>
+                  {farmingArea.name}
+                </div>
               </div>
               <div>
-                <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary, marginBottom: spacing[1] }}>Địa chỉ</div>
-                <div style={{ fontSize: typography.sizes.sm }}>{farmingArea.address}</div>
+                <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary }}>
+                  Dia chi
+                </div>
+                <div style={{ fontSize: typography.sizes.sm, lineHeight: 1.7 }}>
+                  {farmingArea.address}
+                </div>
               </div>
               {farmingArea.area_size && (
                 <div>
-                  <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary, marginBottom: spacing[1] }}>Diện tích</div>
-                  <div style={{ fontWeight: typography.weights.medium }}>{farmingArea.area_size} ha</div>
+                  <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary }}>
+                    Dien tich
+                  </div>
+                  <div style={{ fontWeight: typography.weights.semibold }}>
+                    {farmingArea.area_size} ha
+                  </div>
                 </div>
               )}
               {farmingArea.owner && (
                 <div>
-                  <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary, marginBottom: spacing[1] }}>Chủ sở hữu</div>
-                  <div style={{ fontWeight: typography.weights.medium }}>
-                    👤 {farmingArea.owner.first_name} {farmingArea.owner.last_name}
+                  <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary }}>
+                    Chu so huu
+                  </div>
+                  <div style={{ fontWeight: typography.weights.semibold }}>
+                    {farmingArea.owner.first_name} {farmingArea.owner.last_name}
                   </div>
                 </div>
               )}
             </div>
+
+            <FarmingAreaMap
+              coordinates={farmingArea.coordinates}
+              address={farmingArea.address}
+              title="Ban do vung canh tac"
+              height={240}
+            />
           </div>
         )}
 
-        {/* Certifications Card */}
         {certifications.length > 0 && (
-          <div style={{
-            background: colors.surface,
-            borderRadius: borderRadius.xl,
-            padding: spacing[5],
-            border: `1px solid ${colors.neutral[200]}`,
-            boxShadow: shadows.sm,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing[3], marginBottom: spacing[4] }}>
-              <div style={{ 
-                width: 44, height: 44, borderRadius: borderRadius.lg,
-                background: '#fef3c7', color: '#92400e',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 22,
-              }}>
-                🏆
-              </div>
-              <div>
-                <h3 style={{ margin: 0, fontSize: typography.sizes.lg, fontWeight: typography.weights.semibold }}>
-                  Chứng nhận chất lượng
-                </h3>
-                <p style={{ margin: 0, color: colors.textSecondary, fontSize: typography.sizes.sm }}>
-                  {certifications.length} chứng nhận
-                </p>
-              </div>
+          <div style={{ ...pagePanel, padding: spacing[5], display: 'grid', gap: spacing[4] }}>
+            <div>
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: typography.sizes.xl,
+                  fontWeight: typography.weights.bold,
+                }}
+              >
+                Chung nhan chat luong
+              </h2>
+              <p
+                style={{
+                  margin: `${spacing[2]} 0 0`,
+                  color: colors.textSecondary,
+                  fontSize: typography.sizes.sm,
+                }}
+              >
+                Danh sach chung nhan dang gan voi vung trong
+              </p>
             </div>
-            
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[3] }}>
-              {certifications.map((cert: any) => {
-                const certColor = certTypeColors[cert.type] || certTypeColors.Other;
-                const isExpired = cert.status !== 'valid';
+              {certifications.map((certification) => {
+                const tone = certTone[certification.type] || certTone.Other;
+                const valid = certification.status === 'valid';
                 return (
                   <div
-                    key={cert._id}
+                    key={certification._id}
                     style={{
                       padding: spacing[4],
-                      background: isExpired ? colors.neutral[50] : certColor.bg,
                       borderRadius: borderRadius.lg,
-                      border: `1px solid ${isExpired ? colors.neutral[200] : certColor.border}`,
+                      background: valid ? tone.bg : colors.neutral[50],
+                      border: `1px solid ${valid ? tone.border : colors.neutral[200]}`,
                     }}
                   >
-                    <div style={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'flex-start',
-                      marginBottom: spacing[2],
-                    }}>
-                      <div style={{ 
-                        fontWeight: typography.weights.semibold, 
-                        color: isExpired ? colors.neutral[500] : certColor.text,
-                        fontSize: typography.sizes.sm,
-                      }}>
-                        {cert.type === 'VietGAP' && '🇻🇳 '}
-                        {cert.type === 'GlobalGAP' && '🌍 '}
-                        {cert.type === 'Organic' && '🌿 '}
-                        {cert.name}
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: spacing[3],
+                        alignItems: 'flex-start',
+                        marginBottom: spacing[2],
+                      }}
+                    >
+                      <div style={{ fontWeight: typography.weights.semibold, color: tone.text }}>
+                        {certification.name}
                       </div>
-                      <span style={{
-                        fontSize: typography.sizes.xs,
-                        padding: `${spacing[1]} ${spacing[2]}`,
-                        borderRadius: borderRadius.md,
-                        background: isExpired ? '#fef2f2' : '#dcfce7',
-                        color: isExpired ? '#b91c1c' : '#166534',
-                        fontWeight: typography.weights.medium,
-                      }}>
-                        {isExpired ? '❌ Hết hạn' : '✅ Hiệu lực'}
+                      <span
+                        style={{
+                          borderRadius: borderRadius.md,
+                          padding: `${spacing[1]} ${spacing[2]}`,
+                          fontSize: typography.sizes.xs,
+                          fontWeight: typography.weights.semibold,
+                          background: valid ? '#DCFCE7' : '#FEE2E2',
+                          color: valid ? '#166534' : '#B91C1C',
+                        }}
+                      >
+                        {valid ? 'Con hieu luc' : 'Het han'}
                       </span>
                     </div>
                     <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary }}>
-                      Số: {cert.certificate_number}
+                      Loai: {certification.type}
                     </div>
                     <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary }}>
-                      Cấp bởi: {cert.issuing_authority}
+                      So chung nhan: {certification.certificate_number}
                     </div>
-                    {cert.expiry_date && (
-                      <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary, marginTop: spacing[1] }}>
-                        HSD: {new Date(cert.expiry_date).toLocaleDateString('vi-VN')}
-                      </div>
-                    )}
+                    <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary }}>
+                      Cap boi: {certification.issuing_authority}
+                    </div>
                   </div>
                 );
               })}
@@ -411,6 +656,7 @@ const TraceDetailPage: React.FC = () => {
           </div>
         )}
 
+<<<<<<< HEAD
         {/* Quality inspection evidence */}
         {qualityInspections.length > 0 && (
           <div style={{
@@ -472,225 +718,270 @@ const TraceDetailPage: React.FC = () => {
         )}
 
         {/* Blockchain Card */}
+=======
+>>>>>>> dan/main
         {onChain && (
-          <div style={{
-            background: colors.surface,
-            borderRadius: borderRadius.xl,
-            padding: spacing[5],
-            border: `1px solid ${colors.neutral[200]}`,
-            boxShadow: shadows.sm,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing[3], marginBottom: spacing[4] }}>
-              <div style={{ 
-                width: 44, height: 44, borderRadius: borderRadius.lg,
-                background: '#dbeafe', color: '#1d4ed8',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 22,
-              }}>
-                🔗
+          <div style={{ ...pagePanel, padding: spacing[5], display: 'grid', gap: spacing[4] }}>
+            <div>
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: typography.sizes.xl,
+                  fontWeight: typography.weights.bold,
+                }}
+              >
+                Lien ket blockchain
+              </h2>
+              <p
+                style={{
+                  margin: `${spacing[2]} 0 0`,
+                  color: colors.textSecondary,
+                  fontSize: typography.sizes.sm,
+                }}
+              >
+                Chu so huu batch va so luong hanh dong da ghi
+              </p>
+            </div>
+
+            <div
+              style={{
+                padding: spacing[4],
+                borderRadius: borderRadius.lg,
+                background: '#EFF6FF',
+              }}
+            >
+              <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary }}>
+                Owner address
               </div>
-              <div>
-                <h3 style={{ margin: 0, fontSize: typography.sizes.lg, fontWeight: typography.weights.semibold }}>
-                  Blockchain
-                </h3>
-                <p style={{ margin: 0, color: colors.textSecondary, fontSize: typography.sizes.sm }}>
-                  Dữ liệu bất biến
-                </p>
+              <div
+                style={{
+                  marginTop: spacing[1],
+                  fontFamily: typography.fontFamilyMono,
+                  fontSize: typography.sizes.xs,
+                  color: '#1D4ED8',
+                  wordBreak: 'break-all',
+                }}
+              >
+                {onChain.owner}
               </div>
             </div>
-            
-            <div style={{ display: 'grid', gap: spacing[3] }}>
-              <div>
-                <div style={{ fontSize: typography.sizes.xs, color: colors.textSecondary, marginBottom: spacing[1] }}>
-                  Owner Address
-                </div>
-                <div style={{ 
-                  fontFamily: 'monospace', 
-                  fontSize: typography.sizes.xs,
-                  background: colors.neutral[100],
-                  padding: `${spacing[2]} ${spacing[3]}`,
-                  borderRadius: borderRadius.md,
-                  wordBreak: 'break-all',
-                }}>
-                  {onChain.owner}
-                </div>
+
+            <div
+              style={{
+                padding: spacing[4],
+                borderRadius: borderRadius.lg,
+                background: '#DCFCE7',
+                color: '#166534',
+              }}
+            >
+              <div style={{ fontWeight: typography.weights.bold }}>
+                {onChain.actions.length} su kien da duoc ghi
               </div>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: spacing[3],
-                padding: spacing[3],
-                background: '#dcfce7',
-                borderRadius: borderRadius.md,
-              }}>
-                <span style={{ fontSize: 24 }}>✅</span>
-                <div>
-                  <div style={{ fontWeight: typography.weights.semibold, color: '#166534' }}>
-                    {onChain.actions.length} sự kiện đã ghi
-                  </div>
-                  <div style={{ fontSize: typography.sizes.xs, color: '#166534' }}>
-                    Dữ liệu đã được xác nhận trên blockchain
-                  </div>
-                </div>
+              <div style={{ fontSize: typography.sizes.sm, marginTop: spacing[1] }}>
+                Du lieu da co dau vet tren blockchain va co the doi chieu.
               </div>
             </div>
           </div>
         )}
-      </div>
+      </section>
 
-      {/* Timeline Section */}
-      <div style={{
-        background: colors.surface,
-        borderRadius: borderRadius.xl,
-        padding: spacing[6],
-        border: `1px solid ${colors.neutral[200]}`,
-        boxShadow: shadows.sm,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing[6] }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: typography.sizes.xl, fontWeight: typography.weights.bold }}>
-              📋 Lịch sử truy xuất
-            </h2>
-            <p style={{ margin: `${spacing[1]} 0 0`, color: colors.textSecondary, fontSize: typography.sizes.sm }}>
-              {events.length} sự kiện được ghi nhận
-            </p>
-          </div>
+      <section style={{ ...pagePanel, padding: spacing[6], display: 'grid', gap: spacing[5] }}>
+        <div>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: typography.sizes['2xl'],
+              fontWeight: typography.weights.bold,
+            }}
+          >
+            Lich su truy xuat
+          </h2>
+          <p
+            style={{
+              margin: `${spacing[2]} 0 0`,
+              color: colors.textSecondary,
+              fontSize: typography.sizes.sm,
+            }}
+          >
+            Toan bo cac su kien da duoc ghi nhan cho lo nong san nay
+          </p>
         </div>
 
         {events.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: spacing[8], color: colors.textSecondary }}>
-            <div style={{ fontSize: 48, marginBottom: spacing[3] }}>📝</div>
-            <p>Chưa có sự kiện nào được ghi nhận</p>
+          <div
+            style={{
+              textAlign: 'center',
+              color: colors.textSecondary,
+              padding: spacing[8],
+            }}
+          >
+            Chua co su kien nao duoc ghi nhan.
           </div>
         ) : (
-          <div>
-            {events.map((evt, idx) => {
-              const config = eventTypeConfig[evt.eventType] || { label: evt.eventType, icon: '📌', color: colors.neutral[500] };
-              const result = verifyResults[evt._id];
-              
+          <div style={{ display: 'grid', gap: spacing[4] }}>
+            {events.map((event, index) => {
+              const config = eventTypeConfig[event.eventType] || {
+                label: event.eventType,
+                color: colors.neutral[500],
+                soft: colors.neutral[100],
+              };
+              const result = verifyResults[event._id];
+
               return (
-                <div
-                  key={evt._id}
+                <article
+                  key={event._id}
                   style={{
+                    display: 'grid',
+                    gridTemplateColumns: '52px 1fr',
+                    gap: spacing[4],
                     position: 'relative',
-                    paddingLeft: spacing[10],
-                    paddingBottom: idx < events.length - 1 ? spacing[6] : 0,
                   }}
                 >
-                  {/* Timeline Line */}
-                  {idx < events.length - 1 && (
-                    <div style={{
-                      position: 'absolute',
-                      left: 19,
-                      top: 44,
-                      bottom: 0,
-                      width: 2,
-                      background: colors.neutral[200],
-                    }} />
-                  )}
-
-                  {/* Timeline Dot */}
-                  <div style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: 40,
-                    height: 40,
-                    borderRadius: borderRadius.lg,
-                    background: evt.onChainStatus === 'confirmed' ? `${config.color}15` : colors.neutral[100],
-                    border: `2px solid ${evt.onChainStatus === 'confirmed' ? config.color : colors.neutral[300]}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 18,
-                  }}>
-                    {config.icon}
+                  <div style={{ position: 'relative' }}>
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: borderRadius.lg,
+                        background: config.soft,
+                        border: `2px solid ${config.color}`,
+                        color: config.color,
+                        display: 'grid',
+                        placeItems: 'center',
+                        fontWeight: typography.weights.bold,
+                      }}
+                    >
+                      {index + 1}
+                    </div>
+                    {index < events.length - 1 && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          left: 21,
+                          top: 48,
+                          width: 2,
+                          bottom: -spacing[4],
+                          background: colors.neutral[200],
+                        }}
+                      />
+                    )}
                   </div>
 
-                  {/* Event Card */}
-                  <div style={{
-                    background: colors.neutral[50],
-                    borderRadius: borderRadius.lg,
-                    padding: spacing[5],
-                    border: `1px solid ${colors.neutral[200]}`,
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: spacing[2], marginBottom: spacing[3] }}>
+                  <div
+                    style={{
+                      borderRadius: borderRadius.xl,
+                      background: colors.neutral[50],
+                      border: `1px solid ${colors.neutral[200]}`,
+                      padding: spacing[5],
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: spacing[3],
+                        alignItems: 'flex-start',
+                        flexWrap: 'wrap',
+                        marginBottom: spacing[3],
+                      }}
+                    >
                       <div>
-                        <span style={{ 
-                          fontWeight: typography.weights.semibold, 
-                          fontSize: typography.sizes.base,
-                          color: config.color,
-                        }}>
-                          {config.label}
-                        </span>
-                      </div>
-                      <span style={{ 
-                        fontSize: typography.sizes.xs, 
-                        color: colors.textSecondary,
-                        background: colors.surface,
-                        padding: `${spacing[1]} ${spacing[3]}`,
-                        borderRadius: borderRadius.md,
-                      }}>
-                        🕐 {new Date(evt.createdAt).toLocaleString('vi-VN')}
-                      </span>
-                    </div>
-
-                    <p style={{ margin: `0 0 ${spacing[3]}`, color: colors.textPrimary, fontSize: typography.sizes.sm, lineHeight: 1.6 }}>
-                      {evt.description}
-                    </p>
-
-                    {/* Details */}
-                    {evt.details && Object.keys(evt.details).length > 0 && (
-                      <details style={{ marginBottom: spacing[3] }}>
-                        <summary style={{ 
-                          cursor: 'pointer', 
-                          fontSize: typography.sizes.sm, 
-                          color: colors.primary[600],
-                          fontWeight: typography.weights.medium,
-                        }}>
-                          📊 Chi tiết kỹ thuật
-                        </summary>
-                        <pre style={{ 
-                          fontSize: typography.sizes.xs, 
-                          background: colors.surface, 
-                          padding: spacing[3], 
-                          borderRadius: borderRadius.md, 
-                          overflow: 'auto',
-                          marginTop: spacing[2],
-                          border: `1px solid ${colors.neutral[200]}`,
-                        }}>
-                          {JSON.stringify(evt.details, null, 2)}
-                        </pre>
-                      </details>
-                    )}
-
-                    {/* Blockchain Status & Verify */}
-                    <div style={{ 
-                      display: 'flex', 
-                      gap: spacing[3], 
-                      alignItems: 'center', 
-                      flexWrap: 'wrap',
-                      paddingTop: spacing[3],
-                      borderTop: `1px solid ${colors.neutral[200]}`,
-                    }}>
-                      <BlockchainBadge status={evt.onChainStatus} txHash={evt.txHash} />
-
-                      {evt.onChainStatus === 'confirmed' && (
-                        <button
-                          onClick={() => handleVerify(evt._id)}
-                          disabled={verifying === evt._id}
-                          style={{ 
-                            fontSize: typography.sizes.xs, 
-                            cursor: verifying === evt._id ? 'not-allowed' : 'pointer', 
-                            padding: `${spacing[2]} ${spacing[3]}`,
-                            border: `1px solid ${colors.primary[300]}`,
-                            borderRadius: borderRadius.md,
-                            background: colors.primary[50],
-                            color: colors.primary[700],
-                            fontWeight: typography.weights.medium,
+                        <div
+                          style={{
+                            display: 'inline-flex',
+                            borderRadius: borderRadius.full,
+                            padding: `${spacing[1]} ${spacing[3]}`,
+                            background: config.soft,
+                            color: config.color,
+                            fontSize: typography.sizes.xs,
+                            fontWeight: typography.weights.semibold,
+                            marginBottom: spacing[2],
                           }}
                         >
-                          {verifying === evt._id ? '⏳ Đang kiểm...' : '🔍 Xác minh blockchain'}
+                          {config.label}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: typography.sizes.sm,
+                            color: colors.textSecondary,
+                          }}
+                        >
+                          {new Date(event.createdAt).toLocaleString('vi-VN')}
+                        </div>
+                      </div>
+
+                      <BlockchainBadge
+                        status={event.onChainStatus}
+                        txHash={event.txHash}
+                      />
+                    </div>
+
+                    <p
+                      style={{
+                        margin: 0,
+                        color: colors.textPrimary,
+                        lineHeight: 1.75,
+                        marginBottom: spacing[3],
+                      }}
+                    >
+                      {event.description}
+                    </p>
+
+                    {event.details && Object.keys(event.details).length > 0 && (
+                      <div
+                        style={{
+                          padding: spacing[4],
+                          borderRadius: borderRadius.lg,
+                          background: colors.surface,
+                          border: `1px solid ${colors.neutral[200]}`,
+                          marginBottom: spacing[3],
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: typography.sizes.xs,
+                            color: colors.textSecondary,
+                            marginBottom: spacing[2],
+                          }}
+                        >
+                          Chi tiet ky thuat
+                        </div>
+                        <pre
+                          style={{
+                            margin: 0,
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-word',
+                            fontSize: typography.sizes.xs,
+                            color: colors.textPrimary,
+                            fontFamily: typography.fontFamilyMono,
+                            lineHeight: 1.75,
+                          }}
+                        >
+                          {JSON.stringify(event.details, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+
+                    <div style={{ display: 'flex', gap: spacing[3], flexWrap: 'wrap' }}>
+                      {event.onChainStatus === 'confirmed' && (
+                        <button
+                          type="button"
+                          onClick={() => handleVerify(event._id)}
+                          disabled={verifying === event._id}
+                          style={{
+                            border: `1px solid ${colors.primary[300]}`,
+                            borderRadius: borderRadius.lg,
+                            padding: `${spacing[2]} ${spacing[3]}`,
+                            background: colors.primary[50],
+                            color: colors.primary[700],
+                            fontWeight: typography.weights.semibold,
+                            cursor:
+                              verifying === event._id ? 'not-allowed' : 'pointer',
+                          }}
+                        >
+                          {verifying === event._id
+                            ? 'Dang kiem tra...'
+                            : 'Xac minh blockchain'}
                         </button>
                       )}
 
@@ -718,18 +1009,20 @@ const TraceDetailPage: React.FC = () => {
                         )}
 
                       {result && (
-                        <span style={{
-                          fontSize: typography.sizes.xs,
-                          padding: `${spacing[2]} ${spacing[3]}`,
-                          borderRadius: borderRadius.md,
-                          background: result.verified ? '#dcfce7' : '#fef2f2',
-                          color: result.verified ? '#166534' : '#b91c1c',
-                          fontWeight: typography.weights.semibold,
-                        }}>
+                        <div
+                          style={{
+                            borderRadius: borderRadius.lg,
+                            padding: `${spacing[2]} ${spacing[3]}`,
+                            background: result.verified ? '#DCFCE7' : '#FEE2E2',
+                            color: result.verified ? '#166534' : '#B91C1C',
+                            fontSize: typography.sizes.sm,
+                            fontWeight: typography.weights.semibold,
+                          }}
+                        >
                           {result.verified
-                            ? '✅ Dữ liệu khớp với blockchain'
-                            : '❌ Dữ liệu KHÔNG khớp – có thể bị sửa đổi!'}
-                        </span>
+                            ? 'Du lieu khop voi blockchain'
+                            : 'Du lieu khong khop voi blockchain'}
+                        </div>
                       )}
 
 
@@ -740,28 +1033,37 @@ const TraceDetailPage: React.FC = () => {
                       )}
                     </div>
 
-                    {/* Data Hash */}
-                    {evt.dataHash && (
-                      <div style={{ 
-                        marginTop: spacing[3],
-                        padding: `${spacing[2]} ${spacing[3]}`,
-                        background: colors.surface,
-                        borderRadius: borderRadius.md,
-                        border: `1px solid ${colors.neutral[200]}`,
-                      }}>
-                        <span style={{ fontSize: typography.sizes.xs, color: colors.textSecondary }}>Hash: </span>
-                        <span style={{ fontSize: typography.sizes.xs, fontFamily: 'monospace', color: colors.neutral[500], wordBreak: 'break-all' }}>
-                          {evt.dataHash}
+                    {event.dataHash && (
+                      <div
+                        style={{
+                          marginTop: spacing[3],
+                          padding: `${spacing[2]} ${spacing[3]}`,
+                          borderRadius: borderRadius.lg,
+                          background: colors.surface,
+                          border: `1px solid ${colors.neutral[200]}`,
+                          fontSize: typography.sizes.xs,
+                          color: colors.textSecondary,
+                        }}
+                      >
+                        <span>Hash: </span>
+                        <span
+                          style={{
+                            fontFamily: typography.fontFamilyMono,
+                            color: colors.neutral[500],
+                            wordBreak: 'break-all',
+                          }}
+                        >
+                          {event.dataHash}
                         </span>
                       </div>
                     )}
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 };

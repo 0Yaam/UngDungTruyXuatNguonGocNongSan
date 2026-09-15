@@ -13,9 +13,14 @@ import 'package:app/screens/login_screen.dart';
 import 'package:app/screens/notifications_screen.dart';
 import 'package:app/screens/qr_scanner_screen.dart';
 import 'package:app/screens/register_screen.dart';
+<<<<<<< HEAD
 import 'package:app/screens/timeline_dashboard_screen.dart';
 import 'package:app/screens/welcome_screen.dart';
 import 'package:app/widgets/app_tab_scaffold.dart';
+=======
+import 'package:app/screens/trace_timeline_screen.dart';
+import 'package:app/screens/timeline_screen.dart';
+>>>>>>> dan/main
 import 'package:flutter/material.dart';
 
 class AppRouter {
@@ -45,7 +50,10 @@ class AppRouter {
         return _page(const WelcomeScreen());
 
       case timeline:
+<<<<<<< HEAD
       case trace:
+=======
+>>>>>>> dan/main
         final batchId =
             uri.queryParameters['batchId'] ??
             uri.queryParameters['productId'] ??
@@ -54,6 +62,13 @@ class AppRouter {
           TimelineDashboardScreen(initialBatchId: batchId),
           AppTab.journal,
         );
+
+      case trace:
+        final productId =
+            uri.queryParameters['productId'] ??
+            uri.queryParameters['batchId'] ??
+            (settings.arguments as String?);
+        return _page(TraceTimelineScreen(productId: productId ?? ''));
 
       case login:
         return _page(const LoginScreen());

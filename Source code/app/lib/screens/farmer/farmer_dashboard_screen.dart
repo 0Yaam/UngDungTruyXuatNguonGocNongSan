@@ -453,10 +453,15 @@ class _BatchCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sortedEvents = [...batch.events]
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+<<<<<<< HEAD
     final harvestEvents =
         sortedEvents.where((event) => event.actionType == 'HARVESTING').toList();
     final latestHarvestEvent = harvestEvents.isEmpty ? null : harvestEvents.last;
     final timelineRoute = '${AppRouter.timeline}?batchId=${batch.batchId}';
+=======
+    final latestEvent = sortedEvents.isEmpty ? null : sortedEvents.last;
+    final timelineRoute = '${AppRouter.trace}?productId=${batch.batchId}';
+>>>>>>> dan/main
     final addEventRoute = '${AppRouter.addEvent}?batchId=${batch.batchId}';
     final camerasRoute = '${AppRouter.cameras}?batchId=${batch.batchId}';
     final cameraCount = batch.liveCameras.length;
@@ -2770,7 +2775,11 @@ class _NotificationBellButton extends ConsumerWidget {
           ),
           unreadCountAsync.when(
             loading: () => const SizedBox.shrink(),
+<<<<<<< HEAD
             error: (error, stackTrace) => const SizedBox.shrink(),
+=======
+            error: (_, _) => const SizedBox.shrink(),
+>>>>>>> dan/main
             data: (count) {
               if (count == 0) return const SizedBox.shrink();
               return Positioned(
