@@ -5,6 +5,7 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
+    "local:up": "powershell -ExecutionPolicy Bypass -File scripts/start-local.ps1",
     "deploy:local": "npx hardhat run scripts/deploy.ts --network localhost",
     "deploy:sepolia": "npx hardhat run scripts/deploy.ts --network sepolia",
     "deploy:amoy": "npx hardhat run scripts/deploy.ts --network amoy",

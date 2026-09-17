@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>AgriTrace cần dùng camera để chụp ảnh lá cây phục vụ nhận diện bệnh.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>AgriTrace cần truy cập thư viện ảnh để chọn ảnh cây trồng phục vụ nhận diện bệnh.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>AgriTrace cần truy cập máy chủ AgriTrace trong mạng nội bộ để phân tích và đồng bộ dữ liệu.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

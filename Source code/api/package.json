@@ -2,26 +2,37 @@
   "name": "agri-trace-api",
   "version": "2.0.0",
   "description": "Backend API for Agricultural Traceability with Blockchain",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "seed:cameras": "ts-node src/scripts/seed-demo-cameras.ts",
+    "data:normalize": "ts-node src/scripts/normalize-mongo-data.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "dejavu-fonts-ttf": "^2.37.3",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.0",
+    "exceljs": "^4.4.0",
     "express": "^4.19.2",
     "express-async-errors": "^3.1.1",
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb-memory-server": "^11.0.1",
     "mongoose": "^8.4.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "onnxruntime-node": "^1.27.0",
+    "pdfkit": "^0.18.0",
     "qrcode": "^1.5.3",
+    "sharp": "^0.35.3",
     "validator": "^13.12.0"
   },
   "devDependencies": {
@@ -33,6 +44,7 @@
     "@types/morgan": "^1.9.9",
     "@types/multer": "^1.4.11",
     "@types/node": "^20.14.0",
+    "@types/pdfkit": "^0.17.5",
     "@types/qrcode": "^1.5.5",
     "@types/validator": "^13.12.0",
     "nodemon": "^3.1.3",

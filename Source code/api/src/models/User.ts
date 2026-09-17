@@ -7,9 +7,13 @@ export interface IUser extends Document {
   last_name: string;
   email: string;
   password: string;
+  avatar?: string;
   phone?: string;
   address?: string;
   role: 'admin' | 'manager' | 'farmer' | 'consumer';
+  isActive: boolean;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -39,6 +43,11 @@ const userSchema = new Schema<IUser>(
       required: [true, 'Vui l?ng nh?p m?t kh?u'],
       minlength: [6, 'M?t kh?u t?i thi?u 6 k? t?'],
     },
+    avatar: {
+      type: String,
+      trim: true,
+      default: '/uploads/sample-media/default-avatar.svg',
+    },
     phone: {
       type: String,
       trim: true,
@@ -50,6 +59,16 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: ['admin', 'manager', 'farmer', 'consumer'],
       default: 'consumer',
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordExpires: {
+      type: Date,
     },
   },
   { timestamps: true }

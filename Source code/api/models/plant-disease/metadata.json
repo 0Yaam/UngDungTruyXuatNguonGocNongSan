@@ -1,0 +1,57 @@
+{
+  "version": "mobilenetv2-plantvillage-v1-onnx",
+  "source": "https://huggingface.co/rarfileexe/Plant-Disease-Detector",
+  "sourceRevision": "b84fad67ce0de5c092e0a086689d60cfcc4072ec",
+  "sourceArtifact": "model_4_mobilenet_finetuned.keras",
+  "sourceArtifactUrl": "https://huggingface.co/rarfileexe/Plant-Disease-Detector/resolve/b84fad67ce0de5c092e0a086689d60cfcc4072ec/model_4_mobilenet_finetuned.keras",
+  "sourceSha256": "08f285aff6d9e1ab88d4d5b2269f1cc977714003755f8553887edbf8691b325f",
+  "onnxSha256": "8f2071a7a8068a8289550e0f69180348778700076d786a0120a571a78a62f1df",
+  "license": "MIT",
+  "architecture": "MobileNetV2",
+  "conversion": {
+    "tensorflow": "2.17.1",
+    "tf2onnx": "1.16.1",
+    "opset": 17,
+    "removedTrainingAugmentation": true
+  },
+  "input": {
+    "name": "image",
+    "width": 224,
+    "height": 224,
+    "layout": "NHWC",
+    "dtype": "float32",
+    "valueRange": [0, 255]
+  },
+  "output": {
+    "name": "probabilities",
+    "classes": 38
+  },
+  "minConfidence": 0.65,
+  "minCropMass": 0.55,
+  "maxImages": 3,
+  "thresholdCalibration": "Operational demo thresholds; not scientifically calibrated accuracy guarantees.",
+  "trainingData": {
+    "name": "PlantVillage (augmented)",
+    "attribution": "PlantVillage project and Hughes et al.; dataset attribution reported by the upstream model author.",
+    "conditions": "Predominantly controlled-background leaf images."
+  },
+  "supportedCrops": [
+    {
+      "code": "bell_pepper",
+      "label": "Ớt chuông",
+      "classIndexes": [18, 19],
+      "aliases": ["ớt chuông", "ot chuong", "bell pepper", "pepper bell"]
+    },
+    {
+      "code": "tomato",
+      "label": "Cà chua",
+      "classIndexes": [28, 29, 30, 31, 32, 33, 34, 35, 36, 37],
+      "aliases": ["cà chua", "ca chua", "tomato"]
+    }
+  ],
+  "limitations": [
+    "Mô hình được huấn luyện chủ yếu trên ảnh lá PlantVillage trong điều kiện nền kiểm soát.",
+    "Kết quả chỉ dùng để sàng lọc và không thay thế chẩn đoán của chuyên gia nông nghiệp.",
+    "Bản tích hợp hiện chỉ bật cho cà chua và ớt chuông."
+  ]
+}

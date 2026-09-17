@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Default user avatar">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="48" x2="432" y2="464" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#eaf7df"/>
+      <stop offset="0.55" stop-color="#8fcf9c"/>
+      <stop offset="1" stop-color="#2f8f4d"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="170" y1="84" x2="350" y2="250" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dff4da"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bg)"/>
+  <path d="M256 92c50 0 92 38 98 87-39 2-76 18-104 46-26-31-60-50-98-56 11-44 52-77 104-77Z" fill="url(#leaf)" opacity="0.95"/>
+  <path d="M257 117c-5 47-2 85 10 116" fill="none" stroke="#2f8f4d" stroke-width="12" stroke-linecap="round" opacity="0.35"/>
+  <circle cx="256" cy="226" r="74" fill="#f7fff2"/>
+  <path d="M128 410c21-70 69-112 128-112s107 42 128 112" fill="#f7fff2"/>
+  <path d="M128 410c21-70 69-112 128-112s107 42 128 112" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" opacity="0.35"/>
+</svg>

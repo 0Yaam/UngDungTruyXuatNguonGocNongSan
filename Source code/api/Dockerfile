@@ -22,6 +22,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=build /app/dist ./dist
 COPY abi ./abi
+COPY models ./models
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
 
 RUN sed -i 's/\r$//' ./docker-entrypoint.sh && chmod +x ./docker-entrypoint.sh

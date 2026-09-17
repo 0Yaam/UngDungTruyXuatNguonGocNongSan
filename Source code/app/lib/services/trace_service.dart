@@ -7,7 +7,7 @@ class TraceService {
   final _dio = ApiClient.instance.dio;
 
   Future<FullTrace> getFullTrace(String productId) async {
-    final res = await _dio.get('/trace/$productId');
+    final res = await _dio.get('/public/trace/$productId');
     final payload = res.data as Map<String, dynamic>;
     final tracePayload = payload['trace'];
 

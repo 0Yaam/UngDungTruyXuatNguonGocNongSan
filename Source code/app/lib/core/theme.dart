@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const forest = Color(0xFF0F1A35);
-  static const pine = Color(0xFF4A7DFF);
-  static const leaf = Color(0xFF68D9FF);
-  static const moss = Color(0xFFDCE7FF);
-  static const wheat = Color(0xFFECE1FF);
-  static const canvas = Color(0xFFF4F7FF);
-  static const ink = Color(0xFF121B34);
-  static const muted = Color(0xFF6A7591);
-  static const danger = Color(0xFFD65C74);
-  static const glassFill = Color(0xB8FFFFFF);
-  static const glassLine = Color(0xD6FFFFFF);
+  static const forest = Color(0xFF123222);
+  static const pine = Color(0xFF2E9150);
+  static const leaf = Color(0xFF87C96B);
+  static const moss = Color(0xFFE4F4DF);
+  static const wheat = Color(0xFFF5E8C6);
+  static const canvas = Color(0xFFF6F8F2);
+  static const ink = Color(0xFF1A2D22);
+  static const muted = Color(0xFF677A6D);
+  static const danger = Color(0xFFD24D4D);
+  static const glassFill = Color(0xC0FFFFFF);
+  static const glassLine = Color(0xD6F3F6ED);
 }
 
 final appTheme = ThemeData(
@@ -31,22 +31,22 @@ final appTheme = ThemeData(
   splashColor: Colors.white.withValues(alpha: 0.08),
   textTheme: const TextTheme(
     displaySmall: TextStyle(
-      fontSize: 34,
+      fontSize: 36,
       fontWeight: FontWeight.w800,
-      letterSpacing: -1.2,
+      letterSpacing: -1.35,
       color: AppColors.ink,
-      height: 1.02,
+      height: 1,
     ),
     headlineMedium: TextStyle(
       fontSize: 28,
       fontWeight: FontWeight.w800,
-      letterSpacing: -0.9,
+      letterSpacing: -1,
       color: AppColors.ink,
     ),
     headlineSmall: TextStyle(
-      fontSize: 22,
+      fontSize: 23,
       fontWeight: FontWeight.w700,
-      letterSpacing: -0.4,
+      letterSpacing: -0.5,
       color: AppColors.ink,
     ),
     titleLarge: TextStyle(
@@ -59,16 +59,8 @@ final appTheme = ThemeData(
       fontWeight: FontWeight.w700,
       color: AppColors.ink,
     ),
-    bodyLarge: TextStyle(
-      fontSize: 16,
-      height: 1.5,
-      color: AppColors.ink,
-    ),
-    bodyMedium: TextStyle(
-      fontSize: 14,
-      height: 1.5,
-      color: AppColors.muted,
-    ),
+    bodyLarge: TextStyle(fontSize: 16, height: 1.56, color: AppColors.ink),
+    bodyMedium: TextStyle(fontSize: 14, height: 1.56, color: AppColors.muted),
     labelLarge: TextStyle(
       fontSize: 15,
       fontWeight: FontWeight.w700,
@@ -91,18 +83,16 @@ final appTheme = ThemeData(
     color: AppColors.glassFill,
     elevation: 0,
     surfaceTintColor: Colors.transparent,
-    shadowColor: const Color(0x330B1A4A),
+    shadowColor: const Color(0x2412291C),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(30),
-      side: BorderSide(
-        color: Colors.white.withValues(alpha: 0.58),
-      ),
+      side: BorderSide(color: AppColors.glassLine),
     ),
     margin: EdgeInsets.zero,
   ),
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
-    fillColor: Colors.white.withValues(alpha: 0.46),
+    fillColor: Colors.white.withValues(alpha: 0.5),
     contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
     labelStyle: const TextStyle(color: AppColors.muted),
     hintStyle: TextStyle(color: AppColors.muted.withValues(alpha: 0.9)),
@@ -110,15 +100,11 @@ final appTheme = ThemeData(
     suffixIconColor: AppColors.muted,
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(20),
-      borderSide: BorderSide(
-        color: Colors.white.withValues(alpha: 0.62),
-      ),
+      borderSide: BorderSide(color: AppColors.glassLine),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(20),
-      borderSide: BorderSide(
-        color: Colors.white.withValues(alpha: 0.62),
-      ),
+      borderSide: BorderSide(color: AppColors.glassLine),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(20),
@@ -135,49 +121,32 @@ final appTheme = ThemeData(
   ),
   filledButtonTheme: FilledButtonThemeData(
     style: FilledButton.styleFrom(
-      backgroundColor: AppColors.pine,
+      backgroundColor: AppColors.forest,
       foregroundColor: Colors.white,
       minimumSize: const Size.fromHeight(56),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
-      ),
-      textStyle: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
       elevation: 0,
     ),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       elevation: 0,
-      backgroundColor: Colors.white.withValues(alpha: 0.34),
+      backgroundColor: Colors.white.withValues(alpha: 0.38),
       foregroundColor: AppColors.ink,
       minimumSize: const Size.fromHeight(56),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
-      ),
-      textStyle: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
     ),
   ),
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       minimumSize: const Size.fromHeight(54),
       foregroundColor: AppColors.ink,
-      backgroundColor: Colors.white.withValues(alpha: 0.18),
-      side: BorderSide(
-        color: Colors.white.withValues(alpha: 0.55),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      textStyle: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-      ),
+      backgroundColor: Colors.white.withValues(alpha: 0.26),
+      side: BorderSide(color: AppColors.glassLine),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
     ),
   ),
   chipTheme: ChipThemeData(
@@ -186,11 +155,7 @@ final appTheme = ThemeData(
       fontWeight: FontWeight.w700,
     ),
     side: BorderSide.none,
-    color: WidgetStatePropertyAll(
-      Colors.white.withValues(alpha: 0.34),
-    ),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(999),
-    ),
+    color: WidgetStatePropertyAll(Colors.white.withValues(alpha: 0.34)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
   ),
 );

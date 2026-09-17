@@ -189,8 +189,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           },
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'Quên mật khẩu',
+                        TextButton(
+                          onPressed: () => Navigator.pushNamed(
+                            context,
+                            AppRouter.forgotPassword,
+                          ),
+                          child: const Text('Quên mật khẩu?'),
                         ),
                         const SizedBox(height: 22),
                         FilledButton(
@@ -205,6 +209,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   ),
                                 )
                               : const Text('Đăng nhập'),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Chưa có tài khoản? '),
+                            TextButton(
+                              onPressed: () => Navigator.pushNamed(
+                                context,
+                                AppRouter.register,
+                              ),
+                              child: const Text(
+                                'Đăng ký',
+                                style: TextStyle(fontWeight: FontWeight.w700),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

@@ -37,3 +37,4 @@ desktop.ini
 *.pid
 *.seed
 *.pid.lock
+api/uploads/*.png

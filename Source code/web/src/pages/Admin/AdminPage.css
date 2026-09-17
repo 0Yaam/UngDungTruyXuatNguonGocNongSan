@@ -1,0 +1,18 @@
+.admin-page { color: #17352a; }
+.admin-page > h1::before { content: 'TRUNG TÂM ĐIỀU HÀNH'; display: block; margin-bottom: 8px; color: #2f855a; font-size: 10px; font-weight: 850; letter-spacing: .13em; }
+.admin-page > h1 + p { margin-bottom: 28px !important; color: #6f7f77 !important; }
+.admin-page > div[style*="grid-template-columns"] { gap: 15px !important; }
+.admin-page > div[style*="grid-template-columns"] > div { position: relative; overflow: hidden; min-height: 130px; border: 1px solid #e1e9e4 !important; border-left: 0 !important; border-radius: 19px !important; box-shadow: 0 5px 18px rgba(36,65,52,.055) !important; }
+.admin-page > div[style*="grid-template-columns"] > div::after { content: ''; position: absolute; right: -28px; bottom: -35px; width: 90px; height: 90px; border-radius: 50%; background: rgba(47,143,91,.05); }
+.admin-page > div:last-child { overflow: hidden; padding: 0 !important; border-radius: 21px !important; border-color: #e1e9e4 !important; box-shadow: 0 7px 24px rgba(29,67,49,.06) !important; }
+.admin-page > div:last-child > div:first-child { padding: 23px 25px 18px; margin: 0 !important; border-bottom: 1px solid #e8eee9; background: linear-gradient(180deg,#fff,#fbfdfb); }
+.admin-page > div:last-child > div:first-child h2::before { content: 'QUẢN TRỊ TRUY CẬP'; display: block; margin-bottom: 4px; color: #2f855a; font-size: 9px; font-weight: 850; letter-spacing: .12em; }
+.admin-page > div:last-child > div[style*="overflow-x"] { margin: 0 !important; border: 0 !important; border-radius: 0 !important; }
+.admin-page table th { padding: 13px 18px !important; background: #f7faf8 !important; font-size: 9px !important; letter-spacing: .08em; text-transform: uppercase; }
+.admin-page table td { padding: 14px 18px !important; border-color: #edf1ee !important; }
+.admin-page table tbody tr { background: #fff !important; }
+.admin-page table tbody tr:hover { background: #fbfdfb !important; }
+.admin-page > div:last-child > div:last-child { padding: 15px 20px; margin: 0 !important; border-top: 1px solid #e8eee9; }
+.admin-page input, .admin-page select { min-height: 40px; }
+.admin-page button { font-weight: 700 !important; }
+@media(max-width:760px){.admin-page > div:last-child > div:first-child{align-items:stretch!important;flex-direction:column}.admin-page > div:last-child > div:first-child > div:last-child{width:100%;flex-direction:column}.admin-page > div:last-child > div:first-child input,.admin-page > div:last-child > div:first-child select{width:100%!important}.admin-page table th:nth-child(2),.admin-page table td:nth-child(2){display:none}.admin-page > div:last-child > div:last-child{align-items:flex-start!important;flex-direction:column;gap:12px}.admin-page > div:last-child > div:last-child > div{width:100%;justify-content:space-between}}

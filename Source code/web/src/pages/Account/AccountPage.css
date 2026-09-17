@@ -1,0 +1,27 @@
+.account-page{display:grid;gap:18px;color:var(--agri-text-primary)}
+.account-hero{display:flex;align-items:center;gap:18px;padding:22px;border:1px solid var(--agri-border);border-radius:18px;background:#fff;box-shadow:var(--agri-shadow-md)}
+.account-avatar{width:92px;height:92px;overflow:hidden;display:grid;place-items:center;flex:0 0 auto;border-radius:22px;background:linear-gradient(135deg,var(--agri-primary-600),var(--agri-accent-500));color:#fff;font-size:30px;font-weight:900}
+.account-avatar img{width:100%;height:100%;object-fit:cover}
+.account-eyebrow,.account-panel-head span,.account-card>span{margin:0;color:var(--agri-primary-700);font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.account-hero h1{margin:4px 0;font-size:clamp(27px,4vw,40px);line-height:1.05}
+.account-hero p:last-child{margin:0;color:var(--agri-text-secondary)}
+.account-alert{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;font-size:12px;font-weight:750}
+.account-alert button{border:0;background:transparent;color:inherit;font-size:20px}
+.account-alert.is-error{border:1px solid #fecaca;background:#fff5f5;color:#b91c1c}
+.account-alert.is-success{border:1px solid #bde5ca;background:#f2fbf5;color:#1f7045}
+.account-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(340px,.9fr);gap:16px;align-items:start}
+.account-side{display:grid;gap:16px}
+.account-panel{display:grid;gap:13px;padding:22px;border:1px solid var(--agri-border);border-radius:18px;background:#fff;box-shadow:var(--agri-shadow-sm)}
+.account-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.account-panel h2{margin:4px 0 0;font-size:21px}
+.account-panel label{display:grid;gap:7px;color:var(--agri-text-secondary);font-size:12px;font-weight:800}
+.account-panel input,.account-panel textarea{width:100%;padding:11px 12px;border:1px solid var(--agri-border);border-radius:10px;background:#fff;color:var(--agri-text-primary)}
+.account-panel input:disabled{background:var(--agri-neutral-100);color:var(--agri-text-tertiary)}
+.account-panel button[type=submit]{min-height:42px;border:0;border-radius:10px;background:var(--agri-primary-700);color:#fff;font-weight:900}
+.account-panel button[type=submit]:disabled{opacity:.55}
+.account-card{background:linear-gradient(135deg,#fff,var(--agri-primary-50))}
+.account-card strong{font-size:26px;line-height:1.1}
+.account-card p{margin:0;color:var(--agri-text-secondary);font-size:13px;line-height:1.6}
+.account-state{min-height:320px;display:grid;place-items:center;color:var(--agri-text-secondary)}
+@media(max-width:900px){.account-grid{grid-template-columns:1fr}.account-side{grid-template-columns:1fr 1fr}.account-avatar{width:76px;height:76px;border-radius:18px}}
+@media(max-width:680px){.account-hero{align-items:flex-start;flex-direction:column;padding:16px;border-radius:14px}.account-side{grid-template-columns:1fr}.account-panel{padding:16px;border-radius:14px}}

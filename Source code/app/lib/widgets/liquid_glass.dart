@@ -4,10 +4,7 @@ import 'package:app/core/theme.dart';
 import 'package:flutter/material.dart';
 
 class GlassPageBackground extends StatelessWidget {
-  const GlassPageBackground({
-    super.key,
-    required this.child,
-  });
+  const GlassPageBackground({super.key, required this.child});
 
   final Widget child;
 
@@ -18,11 +15,7 @@ class GlassPageBackground extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFF7F9FF),
-            Color(0xFFEAF0FF),
-            Color(0xFFF6F2FF),
-          ],
+          colors: [Color(0xFFF7FAF2), Color(0xFFECF5E8), Color(0xFFF6F0DF)],
         ),
       ),
       child: Stack(
@@ -32,10 +25,7 @@ class GlassPageBackground extends StatelessWidget {
             right: -60,
             child: _GlowBubble(
               size: 260,
-              colors: [
-                Color(0x8868D9FF),
-                Color(0x0068D9FF),
-              ],
+              colors: [Color(0x55A3D089), Color(0x00A3D089)],
             ),
           ),
           const Positioned(
@@ -43,10 +33,7 @@ class GlassPageBackground extends StatelessWidget {
             left: -70,
             child: _GlowBubble(
               size: 220,
-              colors: [
-                Color(0x88ECE1FF),
-                Color(0x00ECE1FF),
-              ],
+              colors: [Color(0x6DEDE3BE), Color(0x00EDE3BE)],
             ),
           ),
           const Positioned(
@@ -54,13 +41,10 @@ class GlassPageBackground extends StatelessWidget {
             right: -30,
             child: _GlowBubble(
               size: 240,
-              colors: [
-                Color(0x66A7BCFF),
-                Color(0x00A7BCFF),
-              ],
+              colors: [Color(0x55F3D89E), Color(0x00F3D89E)],
             ),
           ),
-          child,
+          Positioned.fill(child: child),
         ],
       ),
     );
@@ -89,19 +73,19 @@ class GlassPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final resolvedColors =
         colors ??
-            [
-              Colors.white.withValues(alpha: 0.52),
-              Colors.white.withValues(alpha: 0.20),
-            ];
+        [
+          Colors.white.withValues(alpha: 0.52),
+          Colors.white.withValues(alpha: 0.20),
+        ];
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x1A26345D),
-            blurRadius: 32,
-            offset: Offset(0, 16),
+            color: Color(0x1F1C3825),
+            blurRadius: 34,
+            offset: Offset(0, 14),
           ),
         ],
       ),
@@ -118,9 +102,7 @@ class GlassPanel extends StatelessWidget {
                 end: Alignment.bottomRight,
                 colors: resolvedColors,
               ),
-              border: Border.all(
-                color: borderColor ?? Colors.white.withValues(alpha: 0.58),
-              ),
+              border: Border.all(color: borderColor ?? AppColors.glassLine),
             ),
             child: child,
           ),
@@ -149,8 +131,8 @@ class GlassIconCapsule extends StatelessWidget {
       radius: size * 0.46,
       blur: 18,
       colors: [
-        Colors.white.withValues(alpha: 0.38),
-        Colors.white.withValues(alpha: 0.16),
+        Colors.white.withValues(alpha: 0.44),
+        Colors.white.withValues(alpha: 0.2),
       ],
       child: SizedBox(
         width: size,
@@ -162,10 +144,7 @@ class GlassIconCapsule extends StatelessWidget {
 }
 
 class _GlowBubble extends StatelessWidget {
-  const _GlowBubble({
-    required this.size,
-    required this.colors,
-  });
+  const _GlowBubble({required this.size, required this.colors});
 
   final double size;
   final List<Color> colors;

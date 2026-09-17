@@ -8,6 +8,7 @@ export const ACTION_TYPES = [
   'HARVESTING',
   'PACKAGING',
   'SHIPPING',
+  'STATUS_UPDATE',
 ] as const;
 
 export type ActionType = (typeof ACTION_TYPES)[number];
@@ -19,8 +20,10 @@ export interface ITraceEvent {
   description: string;
   details?: Record<string, unknown>;
   images: { path: string; filename: string }[];
+  videos: { path: string; filename: string; mimeType?: string }[];
   recorded_by: Types.ObjectId;
   dataHash?: string;
+  dataHashVersion?: 'v1' | 'v2';
   txHash?: string;
   blockNumber?: number;
   onChainStatus: 'pending' | 'confirmed' | 'failed' | 'skipped';
@@ -58,12 +61,20 @@ const traceEventSchema = new Schema<ITraceEvent>(
       type: [{ path: String, filename: String }],
       default: [],
     },
+    videos: {
+      type: [{ path: String, filename: String, mimeType: String }],
+      default: [],
+    },
     recorded_by: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
     dataHash: { type: String },
+    dataHashVersion: {
+      type: String,
+      enum: ['v1', 'v2'],
+    },
     txHash: { type: String },
     blockNumber: { type: Number },
     onChainStatus: {

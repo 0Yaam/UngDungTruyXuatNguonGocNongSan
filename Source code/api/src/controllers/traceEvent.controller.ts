@@ -4,10 +4,11 @@ import * as traceService from '../services/traceEvent.service';
 
 export const createTraceEvent = async (req: Request, res: Response) => {
   const userId = req.user!.userId;
-  const { product, eventType, description, details, images } = req.body;
+  const { product, eventType, description, details, images, videos } = req.body;
   const result = await traceService.createTraceEvent(
-    { product, eventType, description, details, images },
-    userId
+    { product, eventType, description, details, images, videos },
+    userId,
+    req.user!.role
   );
 
   const event = result.traceEvent;
@@ -37,4 +38,21 @@ export const getFullTrace = async (req: Request, res: Response) => {
 export const verifyTraceEvent = async (req: Request, res: Response) => {
   const result = await traceService.verifyTraceEvent(req.params.eventId);
   res.status(StatusCodes.OK).json(result);
+};
+
+export const retryTraceEvent = async (req: Request, res: Response) => {
+  const event = await traceService.retryTraceEvent(
+    req.params.eventId,
+    req.user!.userId,
+    req.user!.role
+  );
+
+  res.status(StatusCodes.OK).json({
+    msg: 'Đã ghi lại sự kiện lên blockchain thành công',
+    event,
+    traceEvent: event,
+    txHash: event.txHash || '',
+    dataHash: event.dataHash || '',
+    onChainStatus: event.onChainStatus,
+  });
 };

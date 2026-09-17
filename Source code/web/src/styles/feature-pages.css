@@ -1,0 +1,110 @@
+.feature-page,
+.admin-page,
+.quality-page,
+.disease-page,
+.supply-page,
+.export-page {
+  width: 100%;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+.feature-page-heading,
+.admin-page > header,
+.quality-heading,
+.disease-heading,
+.supply-heading,
+.export-heading {
+  min-height: auto;
+  margin: 0 0 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.feature-page-heading h1,
+.admin-page h1,
+.quality-heading h1,
+.disease-heading h1,
+.supply-heading h1,
+.export-heading h1 {
+  margin: 0;
+  color: var(--ui-ink, #14241b);
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -.035em;
+}
+
+.feature-page-heading p,
+.quality-heading p,
+.disease-heading p,
+.supply-heading p,
+.export-heading p {
+  margin: 8px 0 0;
+  color: var(--ui-muted, #6c7a72);
+  font-size: 14px;
+}
+
+.feature-form-card,
+.feature-table-card {
+  border: 1px solid var(--ui-line, #dfe7e2) !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  box-shadow: 0 8px 28px rgba(18, 55, 36, .06) !important;
+}
+
+.feature-form-card form > div {
+  width: 100%;
+  max-width: 900px !important;
+}
+
+.feature-table-card {
+  max-width: 100%;
+  overflow-x: auto !important;
+}
+
+.feature-table-card table { min-width: 820px; }
+
+.farming-page > div:last-child {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)) !important;
+}
+
+.farming-page > div:last-child > div {
+  border-color: var(--ui-line, #dfe7e2) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 28px rgba(18, 55, 36, .06) !important;
+}
+
+.trace-public-page {
+  width: min(1080px, 100%);
+  padding: 24px;
+}
+
+@media (max-width: 760px) {
+  .feature-page-heading,
+  .quality-heading,
+  .disease-heading,
+  .supply-heading,
+  .export-heading {
+    align-items: flex-start !important;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .feature-page-heading > button,
+  .quality-heading > button,
+  .disease-heading > button {
+    width: 100%;
+  }
+
+  .feature-form-card form > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  .feature-form-card form > div > div {
+    grid-column: 1 !important;
+  }
+
+  .trace-public-page { padding: 12px; }
+}

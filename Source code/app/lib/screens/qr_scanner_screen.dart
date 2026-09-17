@@ -45,20 +45,45 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
   }
 
   String _extractBatchId(String raw) {
+    final trimmed = raw.trim();
+    final keyMatch = RegExp(
+      r'(?:batchId|productId)=([A-Za-z0-9_-]+)',
+    ).firstMatch(trimmed);
+    if (keyMatch != null) {
+      return keyMatch.group(1) ?? trimmed;
+    }
+
     final uri = Uri.tryParse(raw);
     if (uri == null) {
-      return raw.trim();
+      return trimmed;
     }
 
     if (uri.queryParameters['batchId']?.isNotEmpty == true) {
       return uri.queryParameters['batchId']!;
     }
 
+    if (uri.queryParameters['productId']?.isNotEmpty == true) {
+      return uri.queryParameters['productId']!;
+    }
+
+    final fragmentUri = Uri.tryParse(uri.fragment);
+    if (fragmentUri != null) {
+      if (fragmentUri.queryParameters['batchId']?.isNotEmpty == true) {
+        return fragmentUri.queryParameters['batchId']!;
+      }
+      if (fragmentUri.queryParameters['productId']?.isNotEmpty == true) {
+        return fragmentUri.queryParameters['productId']!;
+      }
+      if (fragmentUri.pathSegments.isNotEmpty) {
+        return fragmentUri.pathSegments.last;
+      }
+    }
+
     if (uri.pathSegments.isNotEmpty) {
       return uri.pathSegments.last;
     }
 
-    return raw.trim();
+    return trimmed;
   }
 
   @override

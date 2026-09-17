@@ -9,7 +9,11 @@ const errorHandler = (
   _next: NextFunction
 ) => {
   if (err instanceof AppError) {
-    return res.status(err.statusCode).json({ msg: err.message });
+    return res.status(err.statusCode).json({
+      msg: err.message,
+      ...(err.code ? { code: err.code } : {}),
+      ...(err.details ? { details: err.details } : {}),
+    });
   }
 
   if (err.name === 'ValidationError') {

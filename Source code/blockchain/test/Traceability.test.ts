@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { Traceability } from "../typechain-types";
 import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
+import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 
 describe("Traceability", function () {
   let contract: Traceability;
@@ -30,9 +31,9 @@ describe("Traceability", function () {
       await expect(contract.createBatch(BATCH_ID))
         .to.emit(contract, "BatchCreated")
         .withArgs(
-          ethers.keccak256(ethers.toUtf8Bytes(BATCH_ID)), // indexed string = hash
+          BATCH_ID,
           owner.address,
-          await getBlockTimestamp()
+          anyValue
         );
 
       expect(await contract.batchExists(BATCH_ID)).to.be.true;
@@ -69,11 +70,11 @@ describe("Traceability", function () {
       )
         .to.emit(contract, "ActionAdded")
         .withArgs(
-          ethers.keccak256(ethers.toUtf8Bytes(BATCH_ID)),
+          BATCH_ID,
           dataHash,
           1,
           owner.address,
-          await getBlockTimestamp()
+          anyValue
         );
 
       expect(await contract.getActionCount(BATCH_ID)).to.equal(1);

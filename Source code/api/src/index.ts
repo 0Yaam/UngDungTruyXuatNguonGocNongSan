@@ -7,6 +7,7 @@ import env from './config/env';
 import connectDB from './config/db';
 import routes from './routes';
 import errorHandler from './middlewares/error.middleware';
+import { UPLOAD_DIR } from './config/upload';
 
 const app = express();
 
@@ -14,6 +15,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('dev'));
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(UPLOAD_DIR));
 
 app.get('/', (_req, res) => {
   res.json({
