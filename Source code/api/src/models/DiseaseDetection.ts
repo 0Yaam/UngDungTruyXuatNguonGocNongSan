@@ -21,6 +21,15 @@ export type DiseaseInferenceEngine = 'onnx' | 'rules';
 export interface IDiseaseDetection {
   product: Types.ObjectId;
   crop_name?: string;
+  source?: 'upload' | 'live';
+  live_session?: {
+    session_id: string;
+    device_id?: string;
+    device_name?: string;
+    platform?: string;
+    app_version?: string;
+    frame_id?: string;
+  };
   symptoms: string[];
   notes?: string;
   images: { path: string; filename: string }[];
@@ -65,6 +74,20 @@ const diseaseDetectionSchema = new Schema<IDiseaseDetection>(
     crop_name: {
       type: String,
       trim: true,
+    },
+    source: {
+      type: String,
+      enum: ['upload', 'live'],
+      default: 'upload',
+      index: true,
+    },
+    live_session: {
+      session_id: { type: String, trim: true },
+      device_id: { type: String, trim: true },
+      device_name: { type: String, trim: true },
+      platform: { type: String, trim: true },
+      app_version: { type: String, trim: true },
+      frame_id: { type: String, trim: true },
     },
     symptoms: {
       type: [String],
@@ -123,6 +146,11 @@ const diseaseDetectionSchema = new Schema<IDiseaseDetection>(
 
 diseaseDetectionSchema.index({ product: 1, createdAt: -1 });
 diseaseDetectionSchema.index({ overall_risk: 1, createdAt: -1 });
+diseaseDetectionSchema.index({
+  detected_by: 1,
+  'live_session.session_id': 1,
+  createdAt: -1,
+});
 
 export default model<IDiseaseDetection>(
   'DiseaseDetection',

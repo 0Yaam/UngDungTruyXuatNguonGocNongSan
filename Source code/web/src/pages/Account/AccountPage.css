@@ -2,7 +2,7 @@
 .account-hero{display:flex;align-items:center;gap:18px;padding:22px;border:1px solid var(--agri-border);border-radius:18px;background:#fff;box-shadow:var(--agri-shadow-md)}
 .account-avatar{width:92px;height:92px;overflow:hidden;display:grid;place-items:center;flex:0 0 auto;border-radius:22px;background:linear-gradient(135deg,var(--agri-primary-600),var(--agri-accent-500));color:#fff;font-size:30px;font-weight:900}
 .account-avatar img{width:100%;height:100%;object-fit:cover}
-.account-eyebrow,.account-panel-head span,.account-card>span{margin:0;color:var(--agri-primary-700);font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.account-eyebrow,.account-panel-head span,.account-card>span{margin:0;color:var(--agri-primary-700);font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
 .account-hero h1{margin:4px 0;font-size:clamp(27px,4vw,40px);line-height:1.05}
 .account-hero p:last-child{margin:0;color:var(--agri-text-secondary)}
 .account-alert{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;font-size:12px;font-weight:750}

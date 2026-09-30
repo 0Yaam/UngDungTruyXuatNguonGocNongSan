@@ -32,10 +32,9 @@ class _FarmerDashboardScreenState extends ConsumerState<FarmerDashboardScreen> {
   Widget build(BuildContext context) {
     final batchesAsync = ref.watch(batchListProvider);
     final authData = ref.watch(authStateProvider);
-    final role =
-        (authData?['user']?['role'] ?? authData?['role'] ?? '')
-            .toString()
-            .toLowerCase();
+    final role = (authData?['user']?['role'] ?? authData?['role'] ?? '')
+        .toString()
+        .toLowerCase();
     final canUseDiseaseDetection = const {
       'admin',
       'manager',
@@ -45,201 +44,204 @@ class _FarmerDashboardScreenState extends ConsumerState<FarmerDashboardScreen> {
     return GlassPageBackground(
       child: SafeArea(
         child: batchesAsync.when(
-            loading: () => _DashboardLoading(
-              userName: 'Nguyễn Văn An',
-              roleLabel: _roleLabel(role),
-              location: 'Cái Bè, Tiền Giang',
-              controller: _searchController,
-              onChanged: (value) => setState(() => _searchQuery = value),
-              onScan: () => Navigator.pushNamed(context, AppRouter.scanner),
-              canUseDiseaseDetection: canUseDiseaseDetection,
-            ),
-            error: (error, _) => _ErrorState(
-              message: 'Không tải được danh sách lô nông sản.\n$error',
-              onRetry: () => ref.invalidate(batchListProvider),
-            ),
-            data: (batches) {
-              final normalizedQuery = _searchQuery.trim().toLowerCase();
-              final activeBatches = batches
-                  .where((batch) =>
-                      batch.status != 'completed' &&
-                      batch.currentQuantity > 0)
-                  .toList();
-              final displayedBatches = normalizedQuery.isEmpty
-                  ? activeBatches
-                  : activeBatches.where((batch) {
-                      final haystack = [
-                        batch.batchId,
-                        batch.productName,
-                        batch.productType,
-                        batch.origin,
-                        batch.status,
-                      ].join(' ').toLowerCase();
-                      return haystack.contains(normalizedQuery);
-                    }).toList();
-
-              final inventoryTotal = activeBatches.fold<double>(
-                0,
-                (sum, batch) => sum + batch.currentQuantity,
-              );
-              final newJournalCount = activeBatches
-                  .expand((batch) => batch.events)
-                  .where((event) =>
-                      DateTime.now().difference(event.createdAt).inDays <= 7)
-                  .length;
-              final warningCount = activeBatches.where((batch) {
-                if (batch.status == 'recalled') return true;
-                if (batch.initialQuantity <= 0) return false;
-                return batch.currentQuantity / batch.initialQuantity < 0.25;
-              }).length;
-              final canDeleteProduct = role == 'admin';
-              final userMap = authData?['user'] is Map<String, dynamic>
-                  ? authData!['user'] as Map<String, dynamic>
-                  : authData;
-              final userName =
-                  (userMap?['name'] ??
-                          [
-                            userMap?['first_name'],
-                            userMap?['last_name'],
-                          ].whereType<Object>().join(' ') ??
-                          'Nguyễn Văn An')
-                      .toString()
-                      .trim();
-              final userRole = _roleLabel(role);
-              final location = activeBatches
-                  .map((batch) => batch.origin)
-                  .firstWhere((origin) => origin.trim().isNotEmpty,
-                      orElse: () => 'Cái Bè, Tiền Giang');
-
-              return RefreshIndicator(
-                onRefresh: () async => ref.invalidate(batchListProvider),
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 104),
-                  children: [
-                    _DashboardHero(
-                      userName: userName.isEmpty ? 'Nguyễn Văn An' : userName,
-                      roleLabel: userRole,
-                      location: location,
-                      warningCount: warningCount,
-                      onLogout: () {
-                        final container = ProviderScope.containerOf(context);
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          AppRouter.home,
-                          (_) => false,
-                        );
-                        Future.microtask(() {
-                          container.read(authStateProvider.notifier).state =
-                              null;
-                          ApiClient.instance.setToken(null);
-                        });
-                      },
-                      controller: _searchController,
-                      onChanged: (value) => setState(() => _searchQuery = value),
-                      onClear: _searchQuery.trim().isEmpty
-                          ? null
-                          : () {
-                              _searchController.clear();
-                              setState(() => _searchQuery = '');
-                            },
-                      onScan: () => Navigator.pushNamed(context, AppRouter.scanner),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: _TodayOverviewCard(
-                        batchCount: batches.length,
-                        inventoryTotal: inventoryTotal,
-                        newJournalCount: newJournalCount,
-                        warningCount: warningCount,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Text(
-                        'Thao tác nhanh',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.forest,
-                              fontSize: 18,
-                            ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 18),
-                      child: _QuickActionsGrid(
-                        actions: _buildQuickActions(
-                          context,
-                          onInventoryTap: () => ref.invalidate(batchListProvider),
-                          includeDiseaseDetection: canUseDiseaseDetection,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Lô nông sản của tôi',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w900,
-                                    color: AppColors.forest,
-                                    fontSize: 18,
-                                  ),
-                            ),
-                          ),
-                          TextButton.icon(
-                            onPressed: () => ref.invalidate(batchListProvider),
-                            label: const Text('Xem tất cả'),
-                            icon: const Icon(Icons.chevron_right_rounded),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    if (batches.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18),
-                        child: GlassPanel(
-                          child: Text(
-                            'Chưa có lô nào để hiển thị. Hãy tạo trước vài lô mẫu để thuận tiện thao tác khi demo.',
-                          ),
-                        ),
-                      )
-                    else if (displayedBatches.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
-                        child: GlassPanel(
-                          child: Text(
-                            'Không tìm thấy lô phù hợp với từ khóa "${_searchQuery.trim()}".',
-                          ),
-                        ),
-                      )
-                    else
-                      ...displayedBatches.map(
-                        (batch) => Padding(
-                          padding: const EdgeInsets.fromLTRB(18, 0, 18, 12),
-                          child: _BatchCard(
-                            batch: batch,
-                            allBatches: batches,
-                            canDelete: canDeleteProduct,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              );
-            },
+          loading: () => _DashboardLoading(
+            userName: 'Nguyễn Văn An',
+            roleLabel: _roleLabel(role),
+            location: 'Cái Bè, Tiền Giang',
+            controller: _searchController,
+            onChanged: (value) => setState(() => _searchQuery = value),
+            onScan: () => Navigator.pushNamed(context, AppRouter.scanner),
+            canUseDiseaseDetection: canUseDiseaseDetection,
           ),
+          error: (error, _) => _ErrorState(
+            message: 'Không tải được danh sách lô nông sản.\n$error',
+            onRetry: () => ref.invalidate(batchListProvider),
+          ),
+          data: (batches) {
+            final normalizedQuery = _searchQuery.trim().toLowerCase();
+            final activeBatches = batches
+                .where(
+                  (batch) =>
+                      batch.status != 'completed' && batch.currentQuantity > 0,
+                )
+                .toList();
+            final displayedBatches = normalizedQuery.isEmpty
+                ? activeBatches
+                : activeBatches.where((batch) {
+                    final haystack = [
+                      batch.batchId,
+                      batch.productName,
+                      batch.productType,
+                      batch.origin,
+                      batch.status,
+                    ].join(' ').toLowerCase();
+                    return haystack.contains(normalizedQuery);
+                  }).toList();
+
+            final inventoryTotal = activeBatches.fold<double>(
+              0,
+              (sum, batch) => sum + batch.currentQuantity,
+            );
+            final newJournalCount = activeBatches
+                .expand((batch) => batch.events)
+                .where(
+                  (event) =>
+                      DateTime.now().difference(event.createdAt).inDays <= 7,
+                )
+                .length;
+            final warningCount = activeBatches.where((batch) {
+              if (batch.status == 'recalled') return true;
+              if (batch.initialQuantity <= 0) return false;
+              return batch.currentQuantity / batch.initialQuantity < 0.25;
+            }).length;
+            final canDeleteProduct = role == 'admin';
+            final userMap = authData?['user'] is Map<String, dynamic>
+                ? authData!['user'] as Map<String, dynamic>
+                : authData;
+            final userName =
+                (userMap?['name'] ??
+                        [
+                          userMap?['first_name'],
+                          userMap?['last_name'],
+                        ].whereType<Object>().join(' ') ??
+                        'Nguyễn Văn An')
+                    .toString()
+                    .trim();
+            final userRole = _roleLabel(role);
+            final location = activeBatches
+                .map((batch) => batch.origin)
+                .firstWhere(
+                  (origin) => origin.trim().isNotEmpty,
+                  orElse: () => 'Cái Bè, Tiền Giang',
+                );
+
+            return RefreshIndicator(
+              onRefresh: () async => ref.invalidate(batchListProvider),
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 104),
+                children: [
+                  _DashboardHero(
+                    userName: userName.isEmpty ? 'Nguyễn Văn An' : userName,
+                    roleLabel: userRole,
+                    location: location,
+                    warningCount: warningCount,
+                    onLogout: () {
+                      final container = ProviderScope.containerOf(context);
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        AppRouter.home,
+                        (_) => false,
+                      );
+                      Future.microtask(() {
+                        container.read(authStateProvider.notifier).state = null;
+                        ApiClient.instance.setToken(null);
+                      });
+                    },
+                    controller: _searchController,
+                    onChanged: (value) => setState(() => _searchQuery = value),
+                    onClear: _searchQuery.trim().isEmpty
+                        ? null
+                        : () {
+                            _searchController.clear();
+                            setState(() => _searchQuery = '');
+                          },
+                    onScan: () =>
+                        Navigator.pushNamed(context, AppRouter.scanner),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    child: _TodayOverviewCard(
+                      batchCount: batches.length,
+                      inventoryTotal: inventoryTotal,
+                      newJournalCount: newJournalCount,
+                      warningCount: warningCount,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    child: Text(
+                      'Thao tác nhanh',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.forest,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18),
+                    child: _QuickActionsGrid(
+                      actions: _buildQuickActions(
+                        context,
+                        onInventoryTap: () => ref.invalidate(batchListProvider),
+                        includeDiseaseDetection: canUseDiseaseDetection,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Lô nông sản của tôi',
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w900,
+                                  color: AppColors.forest,
+                                  fontSize: 18,
+                                ),
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed: () => ref.invalidate(batchListProvider),
+                          label: const Text('Xem tất cả'),
+                          icon: const Icon(Icons.chevron_right_rounded),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (batches.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18),
+                      child: GlassPanel(
+                        child: Text(
+                          'Chưa có lô nào để hiển thị. Hãy tạo trước vài lô mẫu để thuận tiện thao tác khi demo.',
+                        ),
+                      ),
+                    )
+                  else if (displayedBatches.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: GlassPanel(
+                        child: Text(
+                          'Không tìm thấy lô phù hợp với từ khóa "${_searchQuery.trim()}".',
+                        ),
+                      ),
+                    )
+                  else
+                    ...displayedBatches.map(
+                      (batch) => Padding(
+                        padding: const EdgeInsets.fromLTRB(18, 0, 18, 12),
+                        child: _BatchCard(
+                          batch: batch,
+                          allBatches: batches,
+                          canDelete: canDeleteProduct,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -346,10 +348,10 @@ class _DashboardLoading extends StatelessWidget {
           child: Text(
             'Thao tác nhanh',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.forest,
-                  fontSize: 18,
-                ),
+              fontWeight: FontWeight.w900,
+              color: AppColors.forest,
+              fontSize: 18,
+            ),
           ),
         ),
         const SizedBox(height: 10),
@@ -453,15 +455,13 @@ class _BatchCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sortedEvents = [...batch.events]
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-<<<<<<< HEAD
-    final harvestEvents =
-        sortedEvents.where((event) => event.actionType == 'HARVESTING').toList();
-    final latestHarvestEvent = harvestEvents.isEmpty ? null : harvestEvents.last;
+    final harvestEvents = sortedEvents
+        .where((event) => event.actionType == 'HARVESTING')
+        .toList();
+    final latestHarvestEvent = harvestEvents.isEmpty
+        ? null
+        : harvestEvents.last;
     final timelineRoute = '${AppRouter.timeline}?batchId=${batch.batchId}';
-=======
-    final latestEvent = sortedEvents.isEmpty ? null : sortedEvents.last;
-    final timelineRoute = '${AppRouter.trace}?productId=${batch.batchId}';
->>>>>>> dan/main
     final addEventRoute = '${AppRouter.addEvent}?batchId=${batch.batchId}';
     final camerasRoute = '${AppRouter.cameras}?batchId=${batch.batchId}';
     final cameraCount = batch.liveCameras.length;
@@ -469,7 +469,9 @@ class _BatchCard extends ConsumerWidget {
     final batchCode = _displayBatchCode(
       batch.batchCode.isEmpty ? batch.batchId : batch.batchCode,
     );
-    final typeLabel = batch.productType.isEmpty ? 'Lô nông sản' : batch.productType;
+    final typeLabel = batch.productType.isEmpty
+        ? 'Lô nông sản'
+        : batch.productType;
     final harvestDate = latestHarvestEvent == null
         ? ''
         : 'Thu hoạch: ${_formatShortDate(latestHarvestEvent.createdAt)}';
@@ -745,7 +747,10 @@ class _BatchCard extends ConsumerWidget {
       messenger.showSnackBar(SnackBar(content: Text(successMessage)));
     } catch (error) {
       messenger.showSnackBar(
-        SnackBar(content: Text(_friendlyError(error)), backgroundColor: AppColors.danger),
+        SnackBar(
+          content: Text(_friendlyError(error)),
+          backgroundColor: AppColors.danger,
+        ),
       );
     }
   }
@@ -761,7 +766,9 @@ class _BatchCard extends ConsumerWidget {
         onSplit: (quantity, childName, note) => _runWorkflow(
           context,
           ref,
-          () => ref.read(batchServiceProvider).splitProduct(
+          () => ref
+              .read(batchServiceProvider)
+              .splitProduct(
                 productId: batch.id,
                 quantity: quantity,
                 childName: childName,
@@ -769,27 +776,27 @@ class _BatchCard extends ConsumerWidget {
               ),
           'Đã tách lô thành công.',
         ),
-        onMerge: (
-          targetBatch,
-          targetSourceQuantity,
-          targetName,
-          note,
-        ) => _runWorkflow(
-          context,
-          ref,
-          () => ref.read(batchServiceProvider).mergeProducts(
-                targetProductId: batch.id,
-                sourceProductId: targetBatch.id,
-                sourceQuantity: targetSourceQuantity,
-                targetName: targetName,
-                note: note,
-              ),
-          'Đã gộp lô thành công.',
-        ),
+        onMerge: (targetBatch, targetSourceQuantity, targetName, note) =>
+            _runWorkflow(
+              context,
+              ref,
+              () => ref
+                  .read(batchServiceProvider)
+                  .mergeProducts(
+                    targetProductId: batch.id,
+                    sourceProductId: targetBatch.id,
+                    sourceQuantity: targetSourceQuantity,
+                    targetName: targetName,
+                    note: note,
+                  ),
+              'Đã gộp lô thành công.',
+            ),
         onStatusChange: (status, reason, note) => _runWorkflow(
           context,
           ref,
-          () => ref.read(batchServiceProvider).updateProductStatus(
+          () => ref
+              .read(batchServiceProvider)
+              .updateProductStatus(
                 productId: batch.id,
                 status: status,
                 reason: reason,
@@ -1270,9 +1277,9 @@ class _TodayOverviewCard extends StatelessWidget {
                 child: Text(
                   'Tổng quan hôm nay',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: AppColors.forest,
-                        fontWeight: FontWeight.w900,
-                      ),
+                    color: AppColors.forest,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
               const Icon(Icons.chevron_right_rounded, size: 26),
@@ -1371,7 +1378,7 @@ class _OverviewMetric extends StatelessWidget {
             value,
             style: const TextStyle(
               color: AppColors.forest,
-                fontSize: 22,
+              fontSize: 22,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -1485,17 +1492,20 @@ List<_QuickActionData> _buildQuickActions(
     _QuickActionData(
       icon: Icons.landscape_outlined,
       label: 'Vùng trồng',
-      onTap: () => Navigator.pushNamed(context, '${AppRouter.management}?tab=1'),
+      onTap: () =>
+          Navigator.pushNamed(context, '${AppRouter.management}?tab=1'),
     ),
     _QuickActionData(
       icon: Icons.science_outlined,
       label: 'Kiểm nghiệm',
-      onTap: () => Navigator.pushNamed(context, '${AppRouter.management}?tab=0'),
+      onTap: () =>
+          Navigator.pushNamed(context, '${AppRouter.management}?tab=0'),
     ),
     _QuickActionData(
       icon: Icons.verified_outlined,
       label: 'Chứng nhận',
-      onTap: () => Navigator.pushNamed(context, '${AppRouter.management}?tab=2'),
+      onTap: () =>
+          Navigator.pushNamed(context, '${AppRouter.management}?tab=2'),
     ),
     _QuickActionData(
       icon: Icons.videocam_outlined,
@@ -1529,8 +1539,8 @@ class _QuickActionsGrid extends StatelessWidget {
         final itemWidth = constraints.maxWidth >= 700
             ? (constraints.maxWidth - gap * 4) / 5
             : constraints.maxWidth >= 520
-                ? 128.0
-                : 104.0;
+            ? 128.0
+            : 104.0;
 
         return SizedBox(
           height: 106,
@@ -1550,8 +1560,7 @@ class _QuickActionsGrid extends StatelessWidget {
                       onTap: actions[index].onTap,
                       width: itemWidth,
                     ),
-                    if (index != actions.length - 1)
-                      SizedBox(width: gap),
+                    if (index != actions.length - 1) SizedBox(width: gap),
                   ],
                 ],
               ),
@@ -1568,11 +1577,11 @@ class _DragScrollBehavior extends MaterialScrollBehavior {
 
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        PointerDeviceKind.trackpad,
-        PointerDeviceKind.stylus,
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad,
+    PointerDeviceKind.stylus,
+  };
 }
 
 class _ProductImageFallback extends StatelessWidget {
@@ -1594,11 +1603,7 @@ class _ProductImageFallback extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.image_outlined,
-              color: Colors.white,
-              size: 36,
-            ),
+            const Icon(Icons.image_outlined, color: Colors.white, size: 36),
             const SizedBox(height: 8),
             Text(
               label,
@@ -1669,7 +1674,9 @@ class _InventorySnapshot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final percentLabel = (percent * 100).round();
-    final barColor = percentLabel < 25 ? const Color(0xFFEAA739) : AppColors.pine;
+    final barColor = percentLabel < 25
+        ? const Color(0xFFEAA739)
+        : AppColors.pine;
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -1744,8 +1751,9 @@ class _QuantityLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment:
-          alignEnd ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: alignEnd
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         Text(
           label,
@@ -1785,9 +1793,9 @@ String _formatShortDate(DateTime date) {
 String _formatCompactKg(double value) {
   final rounded = value.round();
   final text = rounded.toString().replaceAllMapped(
-        RegExp(r'\B(?=(\d{3})+(?!\d))'),
-        (_) => '.',
-      );
+    RegExp(r'\B(?=(\d{3})+(?!\d))'),
+    (_) => '.',
+  );
   return '$text kg';
 }
 
@@ -1822,9 +1830,8 @@ class _ProductThumb extends StatelessWidget {
             : Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => _ProductImageFallback(
-                  label: label,
-                ),
+                errorBuilder: (_, __, ___) =>
+                    _ProductImageFallback(label: label),
               ),
       ),
     );
@@ -2101,7 +2108,9 @@ class _BatchActionNavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final background = item.isPrimary
         ? item.color
-        : item.color.withValues(alpha: item.color == AppColors.danger ? 0.08 : 0.1);
+        : item.color.withValues(
+            alpha: item.color == AppColors.danger ? 0.08 : 0.1,
+          );
     final foreground = item.isPrimary ? Colors.white : item.color;
 
     return Material(
@@ -2130,7 +2139,9 @@ class _BatchActionNavItem extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: foreground.withValues(alpha: item.isPrimary ? 0.22 : 0.12),
+                          color: foreground.withValues(
+                            alpha: item.isPrimary ? 0.22 : 0.12,
+                          ),
                           borderRadius: BorderRadius.circular(999),
                           border: Border.all(
                             color: foreground.withValues(alpha: 0.22),
@@ -2250,22 +2261,17 @@ class _WorkflowSheet extends StatefulWidget {
 
   final Batch batch;
   final List<Batch> allBatches;
-  final Future<void> Function(
-    double quantity,
-    String childName,
-    String note,
-  ) onSplit;
+  final Future<void> Function(double quantity, String childName, String note)
+  onSplit;
   final Future<void> Function(
     Batch targetBatch,
     double? targetSourceQuantity,
     String targetName,
     String note,
-  ) onMerge;
-  final Future<void> Function(
-    String status,
-    String reason,
-    String note,
-  ) onStatusChange;
+  )
+  onMerge;
+  final Future<void> Function(String status, String reason, String note)
+  onStatusChange;
 
   @override
   State<_WorkflowSheet> createState() => _WorkflowSheetState();
@@ -2288,10 +2294,14 @@ class _WorkflowSheetState extends State<_WorkflowSheet> {
   @override
   void initState() {
     super.initState();
-    final candidates = widget.allBatches.where((item) => item.id != widget.batch.id);
+    final candidates = widget.allBatches.where(
+      (item) => item.id != widget.batch.id,
+    );
     _mergeTarget = candidates.isEmpty ? null : candidates.first;
     if (_mergeTarget != null) {
-      _mergeTargetSourceQuantity.text = _formatQuantity(_mergeTarget!.currentQuantity);
+      _mergeTargetSourceQuantity.text = _formatQuantity(
+        _mergeTarget!.currentQuantity,
+      );
     }
     final options = _nextStatusOptions();
     _targetStatus = options.isEmpty ? widget.batch.status : options.first;
@@ -2321,16 +2331,13 @@ class _WorkflowSheetState extends State<_WorkflowSheet> {
           widget.batch.currentQuantity,
           'Số lượng tách không được lớn hơn tồn hiện tại',
         );
-        await widget.onSplit(
-          quantity,
-          _childName.text,
-          _splitNote.text,
-        );
+        await widget.onSplit(quantity, _childName.text, _splitNote.text);
       } else if (_mode == 'merge') {
         final target = _mergeTarget;
         if (target == null) throw Exception('Vui lòng chọn lô để gộp');
         final targetSourceQuantity =
-            _parseOptional(_mergeTargetSourceQuantity.text) ?? target.currentQuantity;
+            _parseOptional(_mergeTargetSourceQuantity.text) ??
+            target.currentQuantity;
         _ensureAtMost(
           targetSourceQuantity,
           target.currentQuantity,
@@ -2386,7 +2393,9 @@ class _WorkflowSheetState extends State<_WorkflowSheet> {
 
   void _ensureAtMost(double value, double max, String message) {
     if (value - max > 0.000001) {
-      throw Exception('$message. Tối đa: ${_formatQuantity(max)} ${widget.batch.unit}');
+      throw Exception(
+        '$message. Tối đa: ${_formatQuantity(max)} ${widget.batch.unit}',
+      );
     }
   }
 
@@ -2398,10 +2407,7 @@ class _WorkflowSheetState extends State<_WorkflowSheet> {
       child: GlassPanel(
         radius: 30,
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-        colors: [
-          Colors.white.withValues(alpha: 0.94),
-          const Color(0xFFEAF6E7),
-        ],
+        colors: [Colors.white.withValues(alpha: 0.94), const Color(0xFFEAF6E7)],
         child: SafeArea(
           top: false,
           child: SingleChildScrollView(
@@ -2452,7 +2458,8 @@ class _WorkflowSheetState extends State<_WorkflowSheet> {
                     ),
                   ],
                   selected: {_mode},
-                  onSelectionChanged: (value) => setState(() => _mode = value.first),
+                  onSelectionChanged: (value) =>
+                      setState(() => _mode = value.first),
                 ),
                 const SizedBox(height: 16),
                 if (_mode == 'split') _buildSplitForm(),
@@ -2530,8 +2537,9 @@ class _WorkflowSheetState extends State<_WorkflowSheet> {
               .toList(),
           onChanged: (value) => setState(() {
             _mergeTarget = value;
-            _mergeTargetSourceQuantity.text =
-                value == null ? '' : _formatQuantity(value.currentQuantity);
+            _mergeTargetSourceQuantity.text = value == null
+                ? ''
+                : _formatQuantity(value.currentQuantity);
           }),
           decoration: const InputDecoration(
             labelText: 'Lô sẽ gộp vào lô hiện tại',
@@ -2590,7 +2598,8 @@ class _WorkflowSheetState extends State<_WorkflowSheet> {
                 ),
               )
               .toList(),
-          onChanged: (value) => setState(() => _targetStatus = value ?? _targetStatus),
+          onChanged: (value) =>
+              setState(() => _targetStatus = value ?? _targetStatus),
           decoration: const InputDecoration(
             labelText: 'Trạng thái mới',
             prefixIcon: Icon(Icons.flag_circle_outlined),
@@ -2775,11 +2784,7 @@ class _NotificationBellButton extends ConsumerWidget {
           ),
           unreadCountAsync.when(
             loading: () => const SizedBox.shrink(),
-<<<<<<< HEAD
             error: (error, stackTrace) => const SizedBox.shrink(),
-=======
-            error: (_, _) => const SizedBox.shrink(),
->>>>>>> dan/main
             data: (count) {
               if (count == 0) return const SizedBox.shrink();
               return Positioned(

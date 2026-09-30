@@ -145,7 +145,7 @@ const AccountPage: React.FC = () => {
       {(error || success) && (
         <div className={`account-alert ${error ? 'is-error' : 'is-success'}`}>
           {error || success}
-          <button type="button" onClick={clearMessages}>×</button>
+          <button type="button" aria-label="Đóng thông báo" onClick={clearMessages}>×</button>
         </div>
       )}
 

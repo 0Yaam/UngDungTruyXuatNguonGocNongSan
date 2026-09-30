@@ -274,18 +274,7 @@ const FarmingAreaPage: React.FC = () => {
   };
 
   return (
-<<<<<<< HEAD
-    <div className="feature-page farming-page">
-      <div className="feature-page-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing[6] }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: typography.sizes['2xl'], fontWeight: typography.weights.bold }}>
-            Quản lý Vùng trồng
-          </h1>
-          <p style={{ color: colors.textSecondary, margin: `${spacing[2]} 0 0`, fontSize: typography.sizes.sm }}>
-            Thêm, sửa, xóa thông tin các vùng trồng / trang trại
-          </p>
-=======
-    <div style={{ display: 'grid', gap: spacing[6] }}>
+    <div className="feature-page farming-page" style={{ display: 'grid', gap: spacing[6] }}>
       <section
         style={{
           ...panelStyle,
@@ -294,7 +283,7 @@ const FarmingAreaPage: React.FC = () => {
             'radial-gradient(circle at top right, rgba(34,197,94,0.14), transparent 34%), linear-gradient(135deg, #FFFFFF 0%, #F2F8F3 100%)',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: spacing[6], flexWrap: 'wrap' }}>
+        <div className="feature-page-heading" style={{ display: 'flex', justifyContent: 'space-between', gap: spacing[6], flexWrap: 'wrap' }}>
           <div style={{ flex: 1, minWidth: 280 }}>
             <div style={{ display: 'inline-flex', background: colors.primary[50], color: colors.primary[700], borderRadius: borderRadius.full, padding: `${spacing[2]} ${spacing[3]}`, fontWeight: typography.weights.semibold, fontSize: typography.sizes.sm, marginBottom: spacing[4] }}>
               Ban do thong minh cho vung trong
@@ -303,7 +292,7 @@ const FarmingAreaPage: React.FC = () => {
               Quan ly vung trong ro rang, khong can nho toa do
             </h1>
             <p style={{ margin: `${spacing[3]} 0 0`, color: colors.textSecondary, maxWidth: 720, lineHeight: 1.7 }}>
-              Nhap dia chi de lay goi y, hoac bam tren ban do va keo pin den dung vi tri. Trang nay duoc lam lai de viec demo va cap nhat vung trong truc quan hon.
+              Them, sua, xoa vung trong; nhap dia chi de lay goi y, hoac bam tren ban do va keo pin den dung vi tri.
             </p>
           </div>
           <div style={{ minWidth: 220, display: 'grid', gap: spacing[3] }}>
@@ -319,7 +308,6 @@ const FarmingAreaPage: React.FC = () => {
               </div>
             </div>
           </div>
->>>>>>> dan/main
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: spacing[4], marginTop: spacing[6] }}>
@@ -343,21 +331,7 @@ const FarmingAreaPage: React.FC = () => {
       )}
 
       {showForm && (
-<<<<<<< HEAD
-        <div className="feature-form-card" style={{
-          background: colors.surface, border: `1px solid ${colors.neutral[200]}`, 
-          borderRadius: borderRadius.xl, padding: spacing[6], marginBottom: spacing[6], boxShadow: shadows.sm 
-        }}>
-          <h3 style={{ marginTop: 0, fontSize: typography.sizes.lg, fontWeight: typography.weights.semibold }}>
-            {editingId ? 'Sửa vùng trồng' : 'Thêm vùng trồng mới'}
-          </h3>
-          <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gap: spacing[4], maxWidth: 500 }}>
-              <div>
-                <label style={{ display: 'block', marginBottom: spacing[2], fontWeight: typography.weights.medium, fontSize: typography.sizes.sm }}>
-                  Tên vùng trồng *
-=======
-        <section style={{ ...panelStyle, padding: spacing[6], display: 'grid', gap: spacing[6] }}>
+        <section className="feature-form-card" style={{ ...panelStyle, padding: spacing[6], display: 'grid', gap: spacing[6] }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: spacing[4], flexWrap: 'wrap', alignItems: 'flex-start' }}>
             <div>
               <h2 style={{ margin: 0, fontSize: typography.sizes.xl, fontWeight: typography.weights.bold }}>
@@ -373,12 +347,11 @@ const FarmingAreaPage: React.FC = () => {
           </div>
 
           <form onSubmit={saveArea}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 1.05fr) minmax(320px, 1fr)', gap: spacing[6] }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: spacing[6] }}>
               <div style={{ display: 'grid', gap: spacing[4] }}>
                 <label style={{ display: 'grid', gap: spacing[2] }}>
-                  <span style={{ fontWeight: typography.weights.semibold }}>Ten vung trong</span>
+                  <span style={{ fontWeight: typography.weights.semibold }}>Ten vung trong *</span>
                   <input value={formData.name} onChange={(event) => setFormData((prev) => ({ ...prev, name: event.target.value }))} placeholder="Vi du: Khu trong rau huu co Da Lat" style={inputStyle} />
->>>>>>> dan/main
                 </label>
 
                 <label style={{ display: 'grid', gap: spacing[2] }}>

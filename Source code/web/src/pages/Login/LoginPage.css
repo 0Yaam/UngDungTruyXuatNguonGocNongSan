@@ -29,16 +29,32 @@
   isolation: isolate;
 }
 
+.login-story__scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: .88;
+}
+
+.login-story__scene::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(100deg, rgba(7, 43, 31, .12), rgba(7, 43, 31, .72));
+}
+
+.login-story > :not(.login-story__scene) {
+  position: relative;
+  z-index: 1;
+}
+
 .login-story::before {
   content: "";
   position: absolute;
   z-index: -1;
   inset: 0;
   opacity: 0.16;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-  background-size: 72px 72px;
+  background: radial-gradient(circle at 28% 36%, rgba(255, 255, 255, 0.08), transparent 45%);
   mask-image: linear-gradient(145deg, #000, transparent 72%);
 }
 

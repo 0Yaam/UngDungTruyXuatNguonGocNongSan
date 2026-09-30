@@ -6,7 +6,7 @@ import {
   getBlockchainProvider,
   getBlockchainReadContract,
 } from './client.service';
-import { hashEventData } from './hash.service';
+import { hashEventData, hashEventDataLegacy } from './hash.service';
 import type {
   BatchBlockchainSnapshot,
   BatchHistory,
@@ -42,13 +42,21 @@ export const getBatchHistoryFromChain = async (
 export const verifyActionOnChain = async (
   batchId: string,
   actionIndex: number,
-  eventData: Record<string, unknown>
-): Promise<{ verified: boolean; dataHash: string }> => {
+  eventData: Record<string, unknown>,
+  hashVersion: 'v1' | 'v2' = 'v2'
+): Promise<{
+  verified: boolean;
+  dataHash: string;
+  dataHashVersion: 'v1' | 'v2';
+}> => {
   const contract = getBlockchainReadContract();
-  const dataHash = hashEventData(eventData);
+  const dataHash =
+    hashVersion === 'v1'
+      ? hashEventDataLegacy(eventData)
+      : hashEventData(eventData);
   const verified = await contract.verifyAction(batchId, actionIndex, dataHash);
 
-  return { verified, dataHash };
+  return { verified, dataHash, dataHashVersion: hashVersion };
 };
 
 export const getDecodedTransactionFromChain = async (

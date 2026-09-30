@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { createHash } from 'crypto';
 import mongoose, { Types } from 'mongoose';
 import connectDB from '../config/db';
 import env from '../config/env';
@@ -12,9 +13,43 @@ import DiseaseDetection from '../models/DiseaseDetection';
 import SupplyChainOrganization from '../models/SupplyChainOrganization';
 import SupplyChainRecord from '../models/SupplyChainRecord';
 import InventoryTransaction from '../models/InventoryTransaction';
+import Camera from '../models/Camera';
 
 const oid = (value: string) => new Types.ObjectId(value);
 const DEFAULT_USER_AVATAR = '/uploads/sample-media/default-avatar.svg';
+const DEMO_PASSWORD = 'Demo@2026';
+
+async function ensureDemoUsers() {
+  const definitions = [
+    { email: 'demo.admin@agritrace.vn', first_name: 'Quản trị', last_name: 'Demo', role: 'admin' },
+    { email: 'demo.manager@agritrace.vn', first_name: 'Điều phối', last_name: 'Demo', role: 'manager' },
+    { email: 'demo.farmer@agritrace.vn', first_name: 'Nông hộ', last_name: 'Demo', role: 'farmer' },
+    { email: 'demo.consumer@agritrace.vn', first_name: 'Người dùng', last_name: 'Demo', role: 'consumer' },
+  ] as const;
+  const users: Record<string, Types.ObjectId> = {};
+
+  for (const definition of definitions) {
+    let user = await User.findOne({ email: definition.email });
+    if (!user) {
+      user = await User.create({
+        ...definition,
+        password: DEMO_PASSWORD,
+        avatar: DEFAULT_USER_AVATAR,
+        isActive: true,
+      });
+    } else {
+      user.first_name = definition.first_name;
+      user.last_name = definition.last_name;
+      user.role = definition.role;
+      user.avatar = DEFAULT_USER_AVATAR;
+      user.isActive = true;
+      await user.save();
+    }
+    users[definition.role] = user._id;
+  }
+
+  return users;
+}
 
 const PRODUCT_NAMES: Record<string, { name: string; category: string; origin: string }> = {
   '6a0fdaad7ecb33512b9d4c7a': { name: 'Xoài Cát Chu', category: 'Trái cây', origin: 'Cái Bè, Tiền Giang' },
@@ -1109,14 +1144,114 @@ async function ensureProductImages() {
   return { productsUpdated };
 }
 
+async function seedDemoCertifications(createdBy: Types.ObjectId) {
+  const certifications = [
+    {
+      _id: oid('6b3000000000000000000001'), name: 'Chứng nhận VietGAP vùng xoài Cái Bè', type: 'VietGAP',
+      issuing_authority: 'Trung tâm Chất lượng Nông lâm thủy sản vùng 6', certificate_number: 'DEMO-VIETGAP-2026-001',
+      issue_date: new Date('2026-06-15T00:00:00.000Z'), expiry_date: new Date('2027-06-15T00:00:00.000Z'),
+      scope: 'Canh tác, thu hoạch và sơ chế xoài', status: 'valid', holder: createdBy,
+      farming_area: oid('6b1000000000000000000001'), products: [oid('6b2000000000000000000001')],
+      document_url: '/uploads/sample-media/demo-vietgap-certificate.txt',
+    },
+    {
+      _id: oid('6b3000000000000000000002'), name: 'GlobalGAP nhà màng rau thủy canh', type: 'GlobalGAP',
+      issuing_authority: 'Control Union Vietnam', certificate_number: 'DEMO-GLOBALGAP-2026-002',
+      issue_date: new Date('2026-03-20T00:00:00.000Z'), expiry_date: new Date('2027-03-20T00:00:00.000Z'),
+      scope: 'Sản xuất rau thủy canh trong nhà màng', status: 'valid', holder: createdBy,
+      farming_area: oid('6b1000000000000000000002'), products: [oid('6b2000000000000000000002')],
+    },
+    {
+      _id: oid('6b3000000000000000000003'), name: 'Chứng nhận hữu cơ vùng bưởi', type: 'Organic',
+      issuing_authority: 'Tổ chức chứng nhận Nông nghiệp Việt Nam', certificate_number: 'DEMO-ORGANIC-2025-003',
+      issue_date: new Date('2025-11-15T00:00:00.000Z'), expiry_date: new Date('2026-11-15T00:00:00.000Z'),
+      scope: 'Vùng trồng bưởi và quản lý đầu vào hữu cơ', status: 'valid', holder: createdBy,
+      farming_area: oid('6b1000000000000000000003'), products: [oid('6b2000000000000000000003')],
+    },
+    {
+      _id: oid('6b3000000000000000000004'), name: 'HACCP khu đóng gói rau quả', type: 'HACCP',
+      issuing_authority: 'Bureau Veritas Vietnam', certificate_number: 'DEMO-HACCP-2025-004',
+      issue_date: new Date('2025-08-31T00:00:00.000Z'), expiry_date: new Date('2026-08-31T00:00:00.000Z'),
+      scope: 'Sơ chế và đóng gói rau quả tươi', status: 'expired', holder: createdBy,
+      farming_area: oid('6b1000000000000000000004'), products: [oid('6b2000000000000000000004')],
+    },
+  ] as const;
+
+  for (const certification of certifications) {
+    await Certification.findOneAndUpdate(
+      { _id: certification._id },
+      { $set: certification },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+    await FarmingArea.updateOne(
+      { _id: certification.farming_area },
+      { $addToSet: { certifications: certification._id } }
+    );
+  }
+  return { certificationsUpserted: certifications.length };
+}
+
+async function seedDemoCameras(owners: Record<string, Types.ObjectId>, fallbackOwner: Types.ObjectId) {
+  const cameras = [
+    {
+      _id: oid('6b4000000000000000000001'), name: 'Nhà màng cà chua - Luống 01', code: 'CAM-DEMO-TOMATO-01',
+      description: 'Camera demo giám sát lá cà chua và chạy MobileNetV2 khi chọn tác vụ AI.',
+      source_type: 'hls', purpose: 'greenhouse', playback_url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+      snapshot_url: 'http://127.0.0.1:5000/uploads/sample-media/disease-tests/tomato/tomato-early-blight.png',
+      farming_area: oid('6b1000000000000000000002'), product: null,
+      owner: owners.farmer || fallbackOwner, location: 'Nhà màng A · Luống cà chua 01', is_enabled: true,
+      status_override: 'online', last_seen: new Date(), metadata: { seed_key: 'demo-camera-tomato', source: 'normalized-demo-data' },
+    },
+    {
+      _id: oid('6b4000000000000000000002'), name: 'Vườn ớt chuông - Khu ươm', code: 'CAM-DEMO-PEPPER-02',
+      description: 'Camera demo có snapshot lá ớt chuông để thử chẩn đoán bệnh bằng ONNX.',
+      source_type: 'hls', purpose: 'nursery', playback_url: 'https://test-streams.mux.dev/test_001/stream.m3u8',
+      snapshot_url: 'http://127.0.0.1:5000/uploads/sample-media/disease-tests/bell-pepper/bell-pepper-bacterial-spot.png',
+      farming_area: oid('6b1000000000000000000001'), product: null,
+      owner: owners.farmer || fallbackOwner, location: 'Khu ươm giống · Dãy B', is_enabled: true,
+      status_override: 'online', last_seen: new Date(), metadata: { seed_key: 'demo-camera-pepper', source: 'normalized-demo-data' },
+    },
+    {
+      _id: oid('6b4000000000000000000003'), name: 'Khu đóng gói nông sản', code: 'CAM-DEMO-PACKING-03',
+      description: 'Camera demo theo dõi khâu phân loại và đóng gói.', source_type: 'hls', purpose: 'storage',
+      playback_url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+      snapshot_url: 'http://127.0.0.1:5000/uploads/sample-media/fruit-packaging.png',
+      farming_area: oid('6b1000000000000000000004'), product: oid('6b2000000000000000000004'),
+      owner: owners.manager || fallbackOwner, location: 'Nhà sơ chế · Băng chuyền 01', is_enabled: true,
+      status_override: 'online', last_seen: new Date(), metadata: { seed_key: 'demo-camera-packing', source: 'normalized-demo-data' },
+    },
+    {
+      _id: oid('6b4000000000000000000004'), name: 'Điện thoại Tailscale Demo', code: 'CAM-DEMO-PHONE-04',
+      description: 'Camera điện thoại mẫu. Mã ghép demo: PHONE-DEMO-2026.', source_type: 'phone', purpose: 'field_overview',
+      playback_url: 'phone://CAM-DEMO-PHONE-04', farming_area: oid('6b1000000000000000000003'),
+      product: oid('6b2000000000000000000003'), owner: owners.farmer || fallbackOwner,
+      location: 'Vườn bưởi · Cổng phía Đông', is_enabled: true, status_override: 'offline',
+      ingest_key_hash: createHash('sha256').update('PHONE-DEMO-2026').digest('hex'),
+      metadata: { seed_key: 'demo-camera-phone', source: 'normalized-demo-data' },
+    },
+  ] as const;
+
+  for (const camera of cameras) {
+    await Camera.findOneAndUpdate(
+      { _id: camera._id },
+      { $set: camera },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+  }
+  return { camerasUpserted: cameras.length };
+}
+
 async function main() {
   await connectDB(env.DB_URI);
+  const demoUsers = await ensureDemoUsers();
   const fallbackUser = await User.findOne({ role: 'admin', isActive: true }).sort({ createdAt: 1 });
   if (!fallbackUser) throw new Error('Không tìm thấy tài khoản quản trị đang hoạt động.');
 
   const repairedReferences = await normalizeBaseData(fallbackUser._id);
   const harvestEvents = await ensureHarvestEvents(fallbackUser._id);
   const farmingAreaDemo = await seedFarmingAreaDemo(fallbackUser._id);
+  const certifications = await seedDemoCertifications(fallbackUser._id);
+  const cameras = await seedDemoCameras(demoUsers, fallbackUser._id);
   const productAreaLinks = await attachProductsToExistingFarmingAreas();
   const organizations = await seedOrganizations(fallbackUser._id);
   await seedSupplyChain(fallbackUser._id, organizations);
@@ -1134,12 +1269,13 @@ async function main() {
     certifications: await Certification.countDocuments(),
     qualityInspections: await QualityInspection.countDocuments(),
     diseaseDetections: await DiseaseDetection.countDocuments(),
+    cameras: await Camera.countDocuments(),
     supplyChainOrganizations: await SupplyChainOrganization.countDocuments(),
     supplyChainRecords: await SupplyChainRecord.countDocuments(),
     inventoryTransactions: await InventoryTransaction.countDocuments(),
   };
 
-  console.log(JSON.stringify({ success: true, repairedReferences, harvestEvents, farmingAreaDemo, productAreaLinks, traceEventMedia, disease, inventory, productImages, counts }, null, 2));
+  console.log(JSON.stringify({ success: true, repairedReferences, harvestEvents, farmingAreaDemo, certifications, cameras, productAreaLinks, traceEventMedia, disease, inventory, productImages, counts }, null, 2));
 }
 
 main()

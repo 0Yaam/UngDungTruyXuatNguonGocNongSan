@@ -11,14 +11,12 @@ import notificationRoutes from './notification.routes';
 import adminRoutes from './admin.routes';
 import searchRoutes from './search.routes';
 import auditLogRoutes from './auditLog.routes';
-<<<<<<< HEAD
 import publicRoutes from './public.routes';
 import qualityInspectionRoutes from './qualityInspection.routes';
 import diseaseDetectionRoutes from './diseaseDetection.routes';
 import supplyChainRoutes from './supplyChain.routes';
-=======
 import blockchainRoutes from './blockchain.routes';
->>>>>>> dan/main
+import cameraRoutes from './camera.routes';
 
 const router = Router();
 
@@ -35,12 +33,10 @@ router.use('/notifications', notificationRoutes);
 router.use('/admin', adminRoutes);
 router.use('/search', searchRoutes);
 router.use('/audit-logs', auditLogRoutes);
-<<<<<<< HEAD
 router.use('/quality-inspections', qualityInspectionRoutes);
 router.use('/disease-detections', diseaseDetectionRoutes);
 router.use('/supply-chain', supplyChainRoutes);
-=======
 router.use('/blockchain', blockchainRoutes);
->>>>>>> dan/main
+router.use('/cameras', cameraRoutes);
 
 export default router;

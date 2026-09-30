@@ -29,7 +29,7 @@
 .disease-eyebrow {
   display: block;
   color: var(--disease-green-700);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.12em;
   line-height: 1.4;
@@ -210,7 +210,7 @@
 .disease-supported-crops em,
 .disease-supported-crops small {
   color: #6b7e74;
-  font-size: 11px;
+  font-size: 12px;
   font-style: normal;
   line-height: 1.45;
 }
@@ -257,7 +257,7 @@
 
 .disease-stats small {
   color: #6b7d73;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
 }
@@ -275,7 +275,7 @@
   overflow: hidden;
   margin: 0;
   color: #7a8981;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -366,7 +366,7 @@
 .disease-support-check small,
 .disease-upload__head small {
   color: #75867d;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.5;
 }
@@ -464,7 +464,7 @@
   border-radius: 7px;
   background: #e8f4ec;
   color: #176342;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .disease-upload__actions {
@@ -545,7 +545,7 @@
 
 .disease-upload__empty span {
   color: #7a8981;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -585,7 +585,7 @@
 .disease-preview-grid figcaption span {
   overflow: hidden;
   color: #385045;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -594,7 +594,7 @@
 .disease-preview-grid figcaption small {
   flex: 0 0 auto;
   color: #7c8b83;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .disease-preview-grid figure > button {
@@ -632,7 +632,7 @@
 .disease-symptoms > p {
   margin: 5px 0 10px;
   color: #75867d;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -651,7 +651,7 @@
   color: #4a6257;
   cursor: pointer;
   font: inherit;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
 }
 
@@ -675,7 +675,7 @@
   border-radius: 10px;
   background: #fffaf0;
   color: #6f5a24;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -694,7 +694,7 @@
 
 .disease-toolbar p {
   margin-top: 4px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .disease-empty {
@@ -729,7 +729,7 @@
   flex-direction: column;
   padding: 18px;
   border: 1px solid #dfe8e2;
-  border-top: 4px solid #7b8c83;
+  border: 1px solid #7b8c83;
   border-radius: 13px;
   background: #fff;
 }
@@ -771,7 +771,7 @@
 .disease-card-top time {
   flex: 0 0 auto;
   color: #7d8c84;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .disease-status-tag,
@@ -781,7 +781,7 @@
   min-height: 25px;
   padding: 4px 8px;
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -841,7 +841,7 @@
   overflow: hidden;
   margin-bottom: 4px;
   color: #668076;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -868,7 +868,7 @@
 
 .disease-card__headline > strong small {
   color: #77877f;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.3;
 }
@@ -919,7 +919,7 @@
   display: block;
   margin-bottom: 6px;
   color: #684f18;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .disease-warnings ul,
@@ -929,7 +929,7 @@
   margin: 0;
   padding-left: 17px;
   color: #6c6145;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -950,12 +950,12 @@
 
 .disease-section-title strong {
   color: #314c40;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .disease-section-title span {
   color: #87958e;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .disease-candidates ol {
@@ -985,7 +985,7 @@
   border-radius: 50%;
   background: #e7f4eb;
   color: #176342;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -998,14 +998,14 @@
 .disease-candidates li strong {
   overflow: hidden;
   color: #30493e;
-  font-size: 11px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .disease-candidates li small {
   color: #7c8b83;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .disease-candidates li b {
@@ -1016,7 +1016,7 @@
 .disease-candidates > p {
   margin: 8px 0 0;
   color: #7a8981;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -1054,14 +1054,14 @@
 
 .disease-card footer span {
   color: #52685d;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .disease-card footer small {
   overflow: hidden;
   color: #87958e;
-  font-size: 9px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1076,7 +1076,7 @@
   color: #ad3333;
   cursor: pointer;
   font: inherit;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 

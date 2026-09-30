@@ -41,11 +41,14 @@
 
 ### Cách 1: Sử dụng Docker (Khuyến nghị)
 ```bash
-# Chạy toàn bộ hệ thống
-docker-compose up -d
+# Chạy toàn bộ hệ thống và build image
+docker compose up --build -d
 
-# Hoặc sử dụng file batch
+# Hoặc sử dụng file batch (chạy foreground và hiện log)
 start-docker.bat
+
+# Demo camera AI trên điện thoại dùng 4G qua Tailscale:
+# xem LIVE_AI_CAMERA_DEMO.md
 ```
 
 ### Cách 2: Chạy thủ công
@@ -62,7 +65,7 @@ npm run dev
 ```bash
 cd "Source code/web"
 npm install
-npm run dev
+npm start
 ```
 → Web chạy tại: http://localhost:3000
 

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:app/core/theme.dart';
 import 'package:app/models/live_camera.dart';
 import 'package:app/providers/providers.dart';
@@ -59,6 +61,16 @@ class _CameraManagementScreenState
 
   void _addCamera() {
     setState(() => _forms.add(_CameraForm.empty()));
+  }
+
+  void _addPhoneCamera() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    final random = math.Random.secure();
+    final code = List.generate(
+      8,
+      (_) => chars[random.nextInt(chars.length)],
+    ).join();
+    setState(() => _forms.add(_CameraForm.phone(code)));
   }
 
   void _removeCamera(int index) {
@@ -232,10 +244,24 @@ class _CameraManagementScreenState
                           ),
                         ),
                   const SizedBox(height: 8),
-                  OutlinedButton.icon(
-                    onPressed: _saving ? null : _addCamera,
-                    icon: const Icon(Icons.add_rounded),
-                    label: const Text('Thêm camera'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: _saving ? null : _addCamera,
+                          icon: const Icon(Icons.link_rounded),
+                          label: const Text('Camera URL'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: FilledButton.tonalIcon(
+                          onPressed: _saving ? null : _addPhoneCamera,
+                          icon: const Icon(Icons.phone_android_rounded),
+                          label: const Text('Camera điện thoại'),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   FilledButton.icon(
@@ -281,6 +307,21 @@ class _CameraForm {
         streamUrlController: TextEditingController(),
         isActive: true,
       );
+
+  factory _CameraForm.phone(String code) => _CameraForm(
+        id: '',
+        nameController: TextEditingController(text: 'Camera điện thoại'),
+        locationController: TextEditingController(),
+        streamUrlController: TextEditingController(text: 'phone://$code'),
+        isActive: true,
+      );
+
+  bool get isPhoneCamera =>
+      streamUrlController.text.trim().toLowerCase().startsWith('phone://');
+
+  String get pairingCode => isPhoneCamera
+      ? streamUrlController.text.trim().substring('phone://'.length).toUpperCase()
+      : '';
 
   factory _CameraForm.fromCamera(LiveCamera camera) => _CameraForm(
         id: camera.id,
@@ -351,15 +392,54 @@ class _CameraFormCardState extends State<_CameraFormCard> {
             ),
           ),
           const SizedBox(height: 12),
-          TextField(
-            controller: form.streamUrlController,
-            decoration: const InputDecoration(
-              labelText: 'URL live stream',
-              hintText: 'https://... hoặc link YouTube',
-              prefixIcon: Icon(Icons.link_rounded),
+          if (form.isPhoneCamera) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.pine.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppColors.pine.withValues(alpha: 0.20),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Mã ghép điện thoại',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.muted,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  SelectableText(
+                    form.pairingCode,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 3,
+                      color: AppColors.pine,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Mở “Điện thoại làm camera” trên phone rồi nhập mã này.',
+                  ),
+                ],
+              ),
             ),
-            keyboardType: TextInputType.url,
-          ),
+          ] else
+            TextField(
+              controller: form.streamUrlController,
+              decoration: const InputDecoration(
+                labelText: 'URL live stream',
+                hintText: 'https://... hoặc link YouTube',
+                prefixIcon: Icon(Icons.link_rounded),
+              ),
+              keyboardType: TextInputType.url,
+            ),
           const SizedBox(height: 12),
           TextField(
             controller: form.locationController,

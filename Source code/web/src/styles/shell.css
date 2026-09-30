@@ -80,7 +80,7 @@
 .agr-brand__mark svg { width: 40px; height: 40px; display: block; }
 .agr-brand__text { min-width: 0; display: grid; gap: 3px; }
 .agr-brand__text strong { color: inherit; font-size: 22px; line-height: 1; letter-spacing: -.04em; }
-.agr-brand__text small { color: rgba(255, 255, 255, .64); font-size: 10px; letter-spacing: .04em; white-space: nowrap; }
+.agr-brand__text small { color: rgba(255, 255, 255, .64); font-size: 12px; letter-spacing: .04em; white-space: nowrap; }
 
 .agr-sidebar__mobile-close { display: none; }
 
@@ -97,7 +97,7 @@
 .agr-nav__section {
   padding: 0 12px 9px;
   color: rgba(255, 255, 255, .46);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -171,7 +171,7 @@
 .agr-avatar--large { width: 44px; height: 44px; flex-basis: 44px; }
 .agr-sidebar-user__copy { min-width: 0; display: grid; gap: 3px; }
 .agr-sidebar-user__copy strong { overflow: hidden; color: #fff; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
-.agr-sidebar-user__copy small { color: rgba(255, 255, 255, .62); font-size: 11px; }
+.agr-sidebar-user__copy small { color: rgba(255, 255, 255, .62); font-size: 12px; }
 
 .agr-sidebar-action {
   min-height: 39px;
@@ -302,7 +302,7 @@
   border-radius: 999px;
   color: #fff;
   background: #e34c43;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -327,7 +327,7 @@
 .agr-user-button[aria-expanded="true"] { border-color: #e0e8e3; background: #f7faf8; }
 .agr-user-button__copy { min-width: 0; display: grid; gap: 3px; }
 .agr-user-button__copy strong { overflow: hidden; color: #23342c; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-.agr-user-button__copy small { color: #7b8881; font-size: 10px; }
+.agr-user-button__copy small { color: #7b8881; font-size: 12px; }
 
 .agr-popover {
   position: absolute;
@@ -348,8 +348,8 @@
 .agr-popover header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .agr-popover header > div { min-width: 0; display: grid; gap: 3px; }
 .agr-popover header strong { color: #1b2e24; font-size: 14px; }
-.agr-popover header small { overflow: hidden; color: #7b8981; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-.agr-popover__count { padding: 4px 7px; border-radius: 999px; color: #b23732; background: #fff0ee; font-size: 10px; font-weight: 700; }
+.agr-popover header small { overflow: hidden; color: #7b8981; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.agr-popover__count { padding: 4px 7px; border-radius: 999px; color: #b23732; background: #fff0ee; font-size: 12px; font-weight: 700; }
 
 .agr-notification-list { display: grid; gap: 5px; }
 .agr-notification-list a {
@@ -366,8 +366,8 @@
 .agr-notification-list__icon { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 9px; color: #fff; background: #df4841; font-weight: 900; }
 .agr-notification-list__icon--warning { background: #ea9416; }
 .agr-notification-list a > span:last-child { min-width: 0; display: grid; gap: 3px; }
-.agr-notification-list strong { overflow: hidden; color: #27372f; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-.agr-notification-list small { color: #7a8780; font-size: 10px; }
+.agr-notification-list strong { overflow: hidden; color: #27372f; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.agr-notification-list small { color: #7a8780; font-size: 12px; }
 .agr-popover--help p { margin: 0 0 12px; color: #617169; font-size: 12px; line-height: 1.6; }
 .agr-popover__action,
 .agr-popover--user > a,
@@ -382,7 +382,7 @@
   border-radius: 9px;
   color: #285b40;
   background: #f2f8f4;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
   text-decoration: none;
   cursor: pointer;
@@ -419,7 +419,7 @@
 }
 .agr-auth-loader__spinner { width: 43px; height: 43px; margin-bottom: 8px; border: 3px solid #d9e6dd; border-top-color: #0d7a4f; border-radius: 50%; animation: agr-spin .75s linear infinite; }
 .agr-auth-loader strong { font-size: 14px; }
-.agr-auth-loader small { color: #718078; font-size: 11px; }
+.agr-auth-loader small { color: #718078; font-size: 12px; }
 @keyframes agr-spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 1120px) {
@@ -535,7 +535,7 @@
     border-radius: 11px;
     color: #6e7d75;
     background: transparent;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 650;
     text-decoration: none;
     cursor: pointer;
@@ -564,4 +564,63 @@
   .agr-nav__link,
   .agr-popover,
   .agr-auth-loader__spinner { animation: none; transition: none; }
+}
+
+.agr-shell__main.agr-shell__main--monitoring {
+  width:100%;
+  max-width:none;
+  height:calc(100dvh - 76px);
+  min-height:0;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+}
+
+@media(max-width:820px){
+  .agr-shell__main.agr-shell__main--monitoring{
+    height:calc(100dvh - 76px);
+    min-height:0;
+    padding:0;
+  }
+}
+
+.agr-shell__main--monitoring {
+  max-width: none;
+  height: calc(100dvh - 76px);
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Premium AgriTrace shell */
+.agr-shell__workspace {
+  background:
+    radial-gradient(circle at 88% 2%, rgba(66, 185, 121, .11), transparent 28rem),
+    linear-gradient(180deg, #f8faf8 0%, #f3f7f4 100%);
+}
+
+.agr-sidebar {
+  border-right: 1px solid rgba(181, 226, 194, .16);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(120, 215, 129, .22), transparent 24rem),
+    linear-gradient(180deg, #0b4835 0%, #063628 52%, #052a20 100%);
+}
+
+.agr-nav { gap: 3px; }
+.agr-nav__section { margin-top: 15px; color: rgba(219, 245, 225, .5); font-size: 12px; letter-spacing: .14em; }
+.agr-nav__section:first-child { margin-top: 0; }
+.agr-nav__link { position: relative; overflow: hidden; }
+.agr-nav__link--active { border-color: rgba(157, 231, 170, .24); background: linear-gradient(90deg, rgba(89, 183, 112, .24), rgba(89, 183, 112, .08)); }
+
+.agr-topbar { border-bottom-color: rgba(195, 213, 201, .78); background: rgba(251, 253, 251, .88); box-shadow: 0 10px 32px rgba(22, 57, 39, .045); backdrop-filter: blur(18px) saturate(1.35); }
+.agr-search { border-color: #d9e5dc; background: rgba(255, 255, 255, .9); box-shadow: inset 0 1px 0 rgba(255,255,255,.9); }
+.agr-shell__main > * { animation: agri-page-enter .34s var(--agri-ease) both; }
+
+@keyframes agri-page-enter {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agr-shell__main > * { animation: none; }
 }

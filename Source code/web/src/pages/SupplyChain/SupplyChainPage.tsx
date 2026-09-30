@@ -2,6 +2,8 @@ import React, { FormEvent, useEffect, useMemo, useState } from 'react';
 import { productApi } from '../../core/api/product.api';
 import { supplyChainApi } from '../../core/api/supplyChain.api';
 import { useAuth } from '../../core/hooks/useAuth';
+import TraceFlowScene from '../../components/visual/TraceFlowScene';
+import useModalA11y from '../../components/ui/useModalA11y';
 import type { Product, SupplyChainOrganization, SupplyChainRecord } from '../../core/types';
 import './SupplyChainPage.css';
 
@@ -37,6 +39,7 @@ const SupplyChainPage: React.FC = () => {
   const [recallForm, setRecallForm] = useState({ product: '', quantity: '', reason: '', note: '', location: '', status: 'IN_PROGRESS' as 'IN_PROGRESS' | 'COMPLETED' });
   const [saving, setSaving] = useState(false);
   const canManageOrganizations = user?.role === 'admin' || user?.role === 'manager';
+  useModalA11y(Boolean(modal), () => setModal(null), '.supply-modal');
 
   const load = async () => {
     try {
@@ -106,8 +109,8 @@ const SupplyChainPage: React.FC = () => {
   };
 
   return <div className="supply-page">
-    <header className="supply-heading"><div><span>ĐIỀU PHỐI TOÀN CHUỖI</span><h1>Chuỗi cung ứng</h1><p>Theo dõi hành trình lô từ nhà cung cấp đến điểm bán và quản lý sự cố thu hồi.</p></div><div className="supply-heading-actions">{tab === 'records' && <><button onClick={() => setModal('split')}>Tách lô</button><button onClick={() => setModal('merge')}>Gộp lô</button><button onClick={() => setModal('recall')}>Thu hồi</button></>}<button onClick={() => setModal(tab === 'records' ? 'record' : 'organization')} disabled={tab === 'organizations' && !canManageOrganizations}>＋ {tab === 'records' ? 'Tạo nghiệp vụ' : 'Thêm tổ chức'}</button></div></header>
-    {error && <div className="supply-alert">{error}<button onClick={() => setError('')}>×</button></div>}
+    <section className="supply-hero"><header className="supply-heading"><div><span>ĐIỀU PHỐI TOÀN CHUỖI</span><h1>Chuỗi cung ứng</h1><p>Theo dõi hành trình lô từ nhà cung cấp đến điểm bán và quản lý sự cố thu hồi.</p></div><div className="supply-heading-actions">{tab === 'records' && <><button onClick={() => setModal('split')}>Tách lô</button><button onClick={() => setModal('merge')}>Gộp lô</button><button onClick={() => setModal('recall')}>Thu hồi</button></>}<button onClick={() => setModal(tab === 'records' ? 'record' : 'organization')} disabled={tab === 'organizations' && !canManageOrganizations}>＋ {tab === 'records' ? 'Tạo nghiệp vụ' : 'Thêm tổ chức'}</button></div></header><div className="supply-hero__visual"><TraceFlowScene /><div className="supply-hero__visual-copy"><span>LUỒNG TRUY XUẤT THỜI GIAN THỰC</span><strong>Nông trại → Sơ chế → Vận chuyển → Phân phối</strong><p><b>{records.length}</b> nghiệp vụ · <b>{organizations.length}</b> tổ chức tham gia</p></div></div></section>
+    {error && <div className="supply-alert">{error}<button type="button" aria-label="Đóng thông báo lỗi" onClick={() => setError('')}>×</button></div>}
     <section className="supply-stats"><article><span>◎</span><div><small>TỔ CHỨC</small><strong>{organizations.length}</strong><p>Đơn vị trong chuỗi</p></div></article><article><span>↝</span><div><small>HỒ SƠ VẬN HÀNH</small><strong>{records.length}</strong><p>Hoạt động đã ghi nhận</p></div></article><article><span>▰</span><div><small>ĐANG VẬN CHUYỂN</small><strong>{inTransit}</strong><p>Chuyến đang thực hiện</p></div></article><article className={recalls ? 'has-warning' : ''}><span>!</span><div><small>ĐANG THU HỒI</small><strong>{recalls}</strong><p>Sự cố chưa hoàn tất</p></div></article></section>
     <section className="supply-panel">
       <div className="supply-tabs"><button className={tab === 'records' ? 'is-active' : ''} onClick={() => setTab('records')}>Hành trình vận hành</button><button className={tab === 'organizations' ? 'is-active' : ''} onClick={() => setTab('organizations')}>Tổ chức tham gia</button>{tab === 'records' && <select value={operationFilter} onChange={(e) => setOperationFilter(e.target.value)}><option value="">Tất cả nghiệp vụ</option>{Object.entries(operationLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>}</div>

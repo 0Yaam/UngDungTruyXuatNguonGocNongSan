@@ -6,6 +6,7 @@ import {
 } from '../../core/api/qualityInspection.api';
 import { useAuth } from '../../core/hooks/useAuth';
 import type { InspectionMetric, Product, QualityInspection } from '../../core/types';
+import useModalA11y from '../../components/ui/useModalA11y';
 import './QualityInspectionPage.css';
 
 const typeLabels: Record<QualityInspection['inspection_type'], string> = {
@@ -46,6 +47,7 @@ const QualityInspectionPage: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<QualityInspectionInput>(emptyForm());
   const canManage = user?.role === 'admin' || user?.role === 'manager';
+  useModalA11y(showForm, () => setShowForm(false), '.quality-modal');
 
   const load = async () => {
     try {
@@ -132,7 +134,7 @@ const QualityInspectionPage: React.FC = () => {
         {canManage && <button onClick={() => setShowForm(true)}>＋ Tạo phiếu kiểm nghiệm</button>}
       </header>
 
-      {error && <div className="quality-alert">{error}<button onClick={() => setError('')}>×</button></div>}
+      {error && <div className="quality-alert">{error}<button type="button" aria-label="Đóng thông báo lỗi" onClick={() => setError('')}>×</button></div>}
 
       <section className="quality-stats">
         <article><span className="stat-icon is-total">⌕</span><div><small>TỔNG PHIẾU</small><strong>{inspections.length}</strong><p>Hồ sơ kiểm nghiệm</p></div></article>
@@ -177,7 +179,7 @@ const QualityInspectionPage: React.FC = () => {
       {showForm && (
         <div className="quality-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setShowForm(false)}>
           <form className="quality-modal" onSubmit={submit}>
-            <div className="quality-modal-head"><div><span>PHIẾU MỚI</span><h2>Thêm kết quả kiểm nghiệm</h2></div><button type="button" onClick={() => setShowForm(false)}>×</button></div>
+            <div className="quality-modal-head"><div><span>PHIẾU MỚI</span><h2>Thêm kết quả kiểm nghiệm</h2></div><button type="button" aria-label="Đóng hộp thoại" onClick={() => setShowForm(false)}>×</button></div>
             <div className="quality-form-grid">
               <label className="is-wide">Lô nông sản<select required value={form.product} onChange={(e) => setForm({ ...form, product: e.target.value })}><option value="">Chọn lô</option>{products.map((product) => <option key={product._id} value={product._id}>{product.name} — {product.origin}</option>)}</select></label>
               <label>Số phiếu<input required value={form.report_number} onChange={(e) => setForm({ ...form, report_number: e.target.value })} placeholder="VD: KN-2026-001" /></label>
@@ -197,7 +199,7 @@ const QualityInspectionPage: React.FC = () => {
                     <input value={metric.unit || ''} onChange={(e) => updateMetric(index, { unit: e.target.value })} placeholder="Đơn vị" />
                     <input value={metric.limit || ''} onChange={(e) => updateMetric(index, { limit: e.target.value })} placeholder="Ngưỡng" />
                     <select value={metric.passed === false ? 'false' : 'true'} onChange={(e) => updateMetric(index, { passed: e.target.value === 'true' })}><option value="true">Đạt</option><option value="false">Không đạt</option></select>
-                    <button type="button" onClick={() => setForm({ ...form, metrics: (form.metrics || []).filter((_, metricIndex) => metricIndex !== index) })}>×</button>
+                    <button type="button" aria-label={`Xóa chỉ tiêu ${index + 1}`} onClick={() => setForm({ ...form, metrics: (form.metrics || []).filter((_, metricIndex) => metricIndex !== index) })}>×</button>
                   </div>
                 ))}
               </div>

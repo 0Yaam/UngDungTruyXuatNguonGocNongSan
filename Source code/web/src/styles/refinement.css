@@ -1,0 +1,220 @@
+:root {
+  --agri-readable-xs: 0.75rem;
+  --agri-readable-sm: 0.8125rem;
+  --agri-touch-target: 2.75rem;
+}
+
+.agri-route-loader {
+  display: flex;
+  min-height: 40vh;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: var(--agri-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.agri-route-loader > span {
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid var(--agri-primary-200);
+  border-top-color: var(--agri-primary-700);
+  border-radius: 50%;
+  animation: agri-route-spin 0.75s linear infinite;
+}
+
+@keyframes agri-route-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Login: padding participates in width and every field can shrink with the viewport. */
+.login-page,
+.login-page * {
+  box-sizing: border-box;
+}
+
+.login-form-side,
+.login-card,
+.login-input,
+.login-submit {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.login-input,
+.login-submit {
+  min-height: 2.875rem;
+}
+
+.login-story::before {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .login-form-side {
+    width: 100%;
+    padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+    overflow-x: hidden;
+  }
+
+  .login-card {
+    width: 100%;
+    padding: 1.25rem 0;
+  }
+
+  .login-options {
+    gap: 0.65rem;
+  }
+}
+
+/* Monitoring: stream owns the workspace; supporting controls stay compact and readable. */
+.camera-monitor-page {
+  height: calc(100dvh - var(--agri-topbar));
+  min-height: 0;
+  overflow: hidden;
+}
+
+.monitor-toolbar,
+.monitor-filterbar,
+.monitor-focus,
+.monitor-stage,
+.camera-stage,
+.camera-stage__viewport {
+  min-width: 0;
+  min-height: 0;
+}
+
+.camera-eyebrow,
+.camera-navigator__heading span,
+.camera-nav-item small,
+.camera-nav-item__state,
+.camera-stage__footer,
+.camera-stage__hint,
+.camera-grid-card__feed > header strong,
+.camera-grid-card__feed > footer span,
+.camera-grid-card__feed > footer button,
+.camera-grid-pagination span,
+.camera-grid-pagination button {
+  font-size: var(--agri-readable-xs);
+}
+
+.monitor-view-toggle button,
+.camera-stage__fullscreen,
+.camera-ai-trigger,
+.camera-action-menu button,
+.camera-ai-menu button {
+  min-height: 2.5rem;
+  font-size: var(--agri-readable-sm);
+}
+
+.monitor-icon-button,
+.camera-navigator__heading > button {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.camera-nav-item {
+  min-height: 3.75rem;
+}
+
+.camera-stage__viewport,
+.camera-feed-frame,
+.camera-live-media,
+.camera-feed-frame > iframe,
+.camera-feed-frame > img,
+.camera-feed-frame > video {
+  background: #030806;
+}
+
+.camera-feed-frame > iframe,
+.camera-feed-frame > img,
+.camera-feed-frame > video,
+.camera-live-media {
+  object-fit: contain;
+}
+
+@media (max-width: 700px) {
+  .camera-monitor-page {
+    height: calc(100dvh - 11.5rem);
+    padding: 0.5rem;
+  }
+
+  .monitor-toolbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem;
+  }
+
+  .monitor-toolbar__identity h1 {
+    font-size: 1.05rem;
+  }
+
+  .monitor-toolbar__actions {
+    gap: 0.35rem;
+  }
+
+  .monitor-filterbar {
+    grid-template-columns: 1fr;
+  }
+
+  .monitor-icon-button,
+  .camera-button,
+  .monitor-view-toggle button,
+  .camera-stage__fullscreen,
+  .camera-ai-trigger,
+  .camera-grid-card__feed > footer button,
+  .camera-grid-pagination button,
+  .camera-navigator__heading > button {
+    min-width: var(--agri-touch-target);
+    min-height: var(--agri-touch-target);
+  }
+
+  .camera-navigator {
+    width: min(86vw, 20rem);
+    max-width: calc(100vw - 1rem);
+  }
+}
+
+/* Operational typography: no critical label or action below 12px. */
+.supply-toolbar,
+.supply-card,
+.supply-modal,
+.quality-toolbar,
+.quality-card,
+.quality-modal,
+.quality-metrics,
+.export-page,
+.admin-page,
+.account-page {
+  font-size: 0.875rem;
+}
+
+.supply-toolbar label,
+.supply-card small,
+.supply-modal label,
+.quality-toolbar label,
+.quality-card small,
+.quality-modal label,
+.quality-metrics-head span,
+.quality-metrics > p,
+.quality-metric-row input,
+.quality-metric-row select,
+.quality-metrics-head button,
+.quality-modal-actions button {
+  font-size: var(--agri-readable-xs);
+}
+
+@media (pointer: coarse) {
+  button,
+  [role='button'],
+  input,
+  select {
+    min-height: var(--agri-touch-target);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agri-route-loader > span {
+    animation: none;
+  }
+}

@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:app/core/router.dart';
 import 'package:app/core/theme.dart';
-<<<<<<< HEAD
 import 'package:app/models/batch.dart';
 import 'package:app/providers/providers.dart';
 import 'package:app/services/batch_service.dart';
@@ -13,10 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
-=======
-import 'package:app/widgets/liquid_glass.dart';
-import 'package:flutter/material.dart';
->>>>>>> dan/main
 
 class TimelineScreen extends StatefulWidget {
   const TimelineScreen({super.key, this.initialBatchId});
@@ -84,7 +79,6 @@ class _TimelineScreenState extends State<TimelineScreen> {
                 Colors.white.withValues(alpha: 0.66),
                 const Color(0xBDE4F2D8),
               ],
-<<<<<<< HEAD
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(28),
                 child: Container(
@@ -125,30 +119,6 @@ class _TimelineScreenState extends State<TimelineScreen> {
                     ),
                   ),
                 ),
-=======
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Thong tin truy xuat lo nong san',
-                    style: TextStyle(
-                      color: AppColors.muted,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Nhap ma lo hoac quet QR de mo timeline moi.',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.headlineSmall?.copyWith(fontSize: 24),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Man hinh chi tiet se hien theo dang timeline doc gon, co node va cham de mo rong tung su kien.',
-                  ),
-                ],
->>>>>>> dan/main
               ),
             ),
             const SizedBox(height: 16),
@@ -231,16 +201,34 @@ class _TimelineScreenState extends State<TimelineScreen> {
   }
 }
 
-<<<<<<< HEAD
-class _TimelineView extends StatefulWidget {
-  const _TimelineView({required this.batch});
-=======
 class _HintLine extends StatelessWidget {
   const _HintLine({required this.icon, required this.text});
->>>>>>> dan/main
 
   final IconData icon;
   final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GlassIconCapsule(icon: icon, size: 40, color: AppColors.pine),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(color: AppColors.ink, height: 1.5),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TimelineView extends StatefulWidget {
+  const _TimelineView({required this.batch});
+
+  final Batch batch;
 
   @override
   State<_TimelineView> createState() => _TimelineViewState();
@@ -262,7 +250,6 @@ class _TimelineViewState extends State<_TimelineView> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
     final allEvents =
         widget.batch.events
             .map((event) => _eventOverrides[event.id] ?? event)
@@ -785,23 +772,11 @@ class _TimelineMilestoneNode extends StatelessWidget {
                 ),
               ),
             ),
-=======
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GlassIconCapsule(icon: icon, size: 40, color: AppColors.pine),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(color: AppColors.ink, height: 1.5),
->>>>>>> dan/main
           ),
         ),
       ],
     );
   }
-<<<<<<< HEAD
 }
 
 class _SelectedTimelineEventDetail extends StatefulWidget {
@@ -1568,6 +1543,4 @@ class _TimelineErrorState extends StatelessWidget {
       ),
     );
   }
-=======
->>>>>>> dan/main
 }

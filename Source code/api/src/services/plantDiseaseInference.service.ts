@@ -65,7 +65,8 @@ interface ModelRuntime {
 
 export interface InferenceImage {
   filename: string;
-  absolutePath: string;
+  absolutePath?: string;
+  buffer?: Buffer;
 }
 
 export interface PlantDiseaseInferenceResult {
@@ -75,6 +76,10 @@ export interface PlantDiseaseInferenceResult {
   warnings: string[];
   modelVersion: string;
   crop: SupportedCrop;
+}
+
+interface PlantDiseaseInferenceOptions {
+  strictCropMatch?: boolean;
 }
 
 let metadataPromise: Promise<ModelMetadata> | null = null;
@@ -315,12 +320,15 @@ const preprocessImage = async (
   metadata: ModelMetadata
 ): Promise<Float32Array> => {
   try {
-    const probe = await sharp(image.absolutePath, { failOn: 'error' }).metadata();
+    const input = image.buffer || image.absolutePath;
+    if (!input) throw new Error('Image source is required');
+
+    const probe = await sharp(input, { failOn: 'error' }).metadata();
     if (!probe.width || !probe.height || !['jpeg', 'png', 'webp'].includes(probe.format || '')) {
       throw new Error('Unsupported or empty image');
     }
 
-    const { data, info } = await sharp(image.absolutePath, { failOn: 'error' })
+    const { data, info } = await sharp(input, { failOn: 'error' })
       .rotate()
       .resize(metadata.input.width, metadata.input.height, {
         fit: 'fill',
@@ -421,7 +429,8 @@ const diseaseInfo = (
 
 export const inferPlantDisease = async (
   images: InferenceImage[],
-  crop: SupportedCrop
+  crop: SupportedCrop,
+  options: PlantDiseaseInferenceOptions = {}
 ): Promise<PlantDiseaseInferenceResult> => {
   const runtime = await requireRuntime();
   const { metadata, labels, session } = runtime;
@@ -489,7 +498,8 @@ export const inferPlantDisease = async (
     0
   );
 
-  if (cropMass < metadata.minCropMass) {
+  const cropMismatch = cropMass < metadata.minCropMass;
+  if (cropMismatch && options.strictCropMatch !== false) {
     throw new UnprocessableEntityError(
       `Ảnh tải lên không có đủ đặc trưng của ${crop.label.toLowerCase()}`,
       'IMAGE_CROP_MISMATCH',
@@ -526,10 +536,16 @@ export const inferPlantDisease = async (
   const warnings = [
     'Kết quả AI chỉ dùng để sàng lọc và không thay thế chẩn đoán của chuyên gia.',
   ];
-  const status =
+  let status =
     candidates[0].confidence >= metadata.minConfidence
       ? ('completed' as const)
       : ('inconclusive' as const);
+  if (cropMismatch) {
+    status = 'inconclusive';
+    warnings.unshift(
+      `Ảnh chưa thể hiện rõ đặc trưng của ${crop.label.toLowerCase()} (${Math.round(cropMass * 100)}%). MobileNet vẫn trả kết quả tham khảo; hãy chụp cận cảnh một lá, đủ sáng và nền gọn.`
+    );
+  }
   if (status === 'inconclusive') {
     warnings.unshift(
       `Độ tin cậy thấp hơn ngưỡng ${Math.round(metadata.minConfidence * 100)}%; cần chụp lại ảnh rõ hơn hoặc nhờ kỹ thuật viên xác nhận.`
