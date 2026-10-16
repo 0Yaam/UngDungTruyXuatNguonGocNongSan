@@ -6,6 +6,11 @@ class LiveCamera {
   final bool isActive;
   final String? thumbnail;
 
+  bool get isPhoneCamera => streamUrl.toLowerCase().startsWith('phone://');
+  String get pairingCode => isPhoneCamera
+      ? streamUrl.substring('phone://'.length).trim().toUpperCase()
+      : '';
+
   const LiveCamera({
     required this.id,
     required this.name,

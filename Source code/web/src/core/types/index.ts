@@ -1,10 +1,6 @@
 export interface User {
-<<<<<<< HEAD
   _id?: string;
   userId?: string;
-=======
-  _id: string;
->>>>>>> dan/main
   name?: string;
   first_name?: string;
   last_name?: string;

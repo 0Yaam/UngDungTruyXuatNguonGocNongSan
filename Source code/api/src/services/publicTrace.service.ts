@@ -12,7 +12,7 @@ export const getPublicTrace = async (productId: string) => {
     isDeleted: { $ne: true },
   })
     .select(
-      'name category type description origin cultivation_time images qrcode status onChainBatchId farming_area initial_quantity current_quantity unit createdAt updatedAt'
+      'name category type description origin cultivation_time images qrcode status onChainBatchId farming_area initial_quantity current_quantity unit live_cameras createdAt updatedAt'
     )
     .populate({
       path: 'farming_area',

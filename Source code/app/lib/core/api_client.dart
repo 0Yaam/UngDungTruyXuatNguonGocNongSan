@@ -52,3 +52,20 @@ class ApiClient {
 
   void setToken(String? token) => _token = token;
 }
+
+
+Uri phoneCameraWebSocketUri({
+  required String mode,
+  required String key,
+}) {
+  final base = Uri.parse(kBaseUrl);
+  final wsScheme = base.scheme == 'https' ? 'wss' : 'ws';
+  return base.replace(
+    scheme: wsScheme,
+    path: '/api/v1/phone-cameras',
+    queryParameters: {
+      'mode': mode,
+      'key': key.trim().toUpperCase(),
+    },
+  );
+}

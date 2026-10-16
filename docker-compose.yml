@@ -1,7 +1,8 @@
+name: agritrace
+
 services:
   mongo:
     image: mongo:7
-    container_name: agri-trace-mongo
     restart: unless-stopped
     ports:
       - "27017:27017"
@@ -17,29 +18,35 @@ services:
   blockchain:
     build:
       context: ./Source code/blockchain
-    container_name: agri-trace-blockchain
+    init: true
     restart: unless-stopped
     ports:
       - "8545:8545"
     volumes:
       - contract-data:/shared
     healthcheck:
-      test: ["CMD-SHELL", "test -f /shared/contract.env"]
+      test: ["CMD-SHELL", "test -s /shared/contract.env"]
       interval: 5s
       timeout: 3s
-      retries: 20
+      retries: 24
       start_period: 10s
+
+  mediamtx:
+    image: bluenviron/mediamtx:1.21.1
+    restart: unless-stopped
+    ports:
+      - "8554:8554"
+      - "8888:8888"
+      - "8889:8889"
+      - "8189:8189/udp"
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml:ro
 
   api:
     build:
       context: ./Source code/api
-    container_name: agri-trace-api
+    init: true
     restart: unless-stopped
-    depends_on:
-      mongo:
-        condition: service_healthy
-      blockchain:
-        condition: service_healthy
     environment:
       PORT: 5000
       NODE_ENV: production
@@ -50,22 +57,50 @@ services:
       BLOCKCHAIN_PRIVATE_KEY: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
       FRONTEND_URL: http://localhost:3000
       CONTRACT_FILE: /shared/contract.env
+      CAMERA_OFFLINE_AFTER_MS: 90000
+      CAMERA_FRAME_TIMEOUT_MS: 15000
+      CAMERA_MAX_FRAME_BYTES: 5242880
+      FFMPEG_PATH: ffmpeg
+      MEDIA_INTERNAL_RTSP_BASE: rtsp://mediamtx:8554
+      MEDIA_CONTROL_API_BASE: http://mediamtx:9997
+      MEDIA_PUBLIC_WEBRTC_BASE: http://localhost:8889
+      MEDIA_PUBLIC_HLS_BASE: http://localhost:8888
+    depends_on:
+      mongo:
+        condition: service_healthy
+      blockchain:
+        condition: service_healthy
+      mediamtx:
+        condition: service_started
     ports:
       - "5000:5000"
     volumes:
       - contract-data:/shared:ro
+      - "./Source code/api/uploads:/app/uploads"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:5000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
 
   web:
     build:
       context: ./Source code/web
       args:
         REACT_APP_API_URL: /api/v1
-    container_name: agri-trace-web
     restart: unless-stopped
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     ports:
       - "3000:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
 
 volumes:
   mongo-data:

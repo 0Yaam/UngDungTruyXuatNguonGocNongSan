@@ -30,14 +30,11 @@ export interface IProduct {
   onChainBatchId?: string;
   batchTxHash?: string;
   created_by: Types.ObjectId;
-<<<<<<< HEAD
   isDeleted: boolean;
   deletedAt?: Date;
   deleted_by?: Types.ObjectId;
-=======
   createdAt?: Date;
   updatedAt?: Date;
->>>>>>> dan/main
 }
 
 const productSchema = new Schema<IProduct>(

@@ -8,6 +8,9 @@ import '@fontsource/be-vietnam-pro/800.css';
 import App from './App';
 import './styles/design-system.css';
 import './styles/feature-pages.css';
+import './styles/product-polish.css';
+import './styles/refinement.css';
+import './styles/workspace.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(

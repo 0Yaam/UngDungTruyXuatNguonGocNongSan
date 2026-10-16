@@ -1,4 +1,8 @@
-export { hashEventData, toCanonicalJson } from './hash.service';
+export {
+  hashEventData,
+  hashEventDataLegacy,
+  toCanonicalJson,
+} from './hash.service';
 export {
   isBlockchainReadConfigured,
   isBlockchainWriteConfigured,

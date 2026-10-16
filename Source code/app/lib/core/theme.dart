@@ -15,6 +15,7 @@ class AppColors {
 }
 
 final appTheme = ThemeData(
+  fontFamily: 'Roboto',
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
     seedColor: AppColors.pine,

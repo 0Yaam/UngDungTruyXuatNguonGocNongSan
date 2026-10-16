@@ -146,6 +146,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+button,
+select {
+  font-family: var(--agri-font-sans);
+}
+
 #root {
   min-height: 100vh;
   min-height: 100dvh;
@@ -186,6 +199,51 @@ a {
 
 [hidden] {
   display: none !important;
+}
+
+.agri-living-scene,
+.agri-living-scene__fallback,
+.trace-flow-scene,
+.trace-flow-scene__fallback {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: linear-gradient(145deg, #173c2b, #5f8052);
+}
+
+.trace-flow-scene,
+.trace-flow-scene__fallback {
+  background: radial-gradient(circle at 70% 20%, #327d5a, #102d23 58%, #081b15);
+}
+
+.agri-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--agri-space-6);
+  max-width: var(--agri-container);
+  margin: 0 auto var(--agri-space-6);
+}
+
+.agri-page-header__copy { max-width: 760px; }
+.agri-page-header__eyebrow { color: var(--agri-primary-700); font-size: var(--agri-text-xs); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.agri-page-header h1 { margin: var(--agri-space-2) 0; font-size: clamp(30px, 4vw, 44px); line-height: 1.08; letter-spacing: -.045em; }
+.agri-page-header p { margin: 0; color: var(--agri-text-secondary); line-height: 1.65; }
+.agri-page-header__actions { display: flex; flex-wrap: wrap; gap: var(--agri-space-2); margin-top: var(--agri-space-5); }
+.agri-page-header__aside { flex: 0 0 auto; }
+
+.agri-status { display: inline-flex; align-items: center; gap: 7px; width: max-content; min-height: 26px; padding: 3px 9px; border: 1px solid var(--agri-border); border-radius: var(--agri-radius-pill); background: var(--agri-neutral-50); color: var(--agri-neutral-700); font-size: 12px; font-weight: 750; }
+.agri-status__dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.agri-status--success { border-color: #b8dfc8; background: var(--agri-success-100); color: var(--agri-success-700); }
+.agri-status--warning { border-color: #f1d2ae; background: var(--agri-warning-100); color: var(--agri-warning-700); }
+.agri-status--danger { border-color: #f3c7c2; background: var(--agri-danger-100); color: var(--agri-danger-700); }
+.agri-status--info { border-color: #bfd8ef; background: var(--agri-info-100); color: var(--agri-info-700); }
+.agri-status--verified { border-color: #b9d2c4; background: #edf6f0; color: #225f41; }
+
+@media (max-width: 720px) {
+  .agri-page-header { align-items: flex-start; flex-direction: column; }
+  .agri-page-header__aside, .agri-page-header__actions { width: 100%; }
 }
 
 ::selection {
@@ -1042,7 +1100,6 @@ a {
   gap: var(--agri-space-3);
   padding: var(--agri-space-4);
   border: 1px solid var(--agri-border);
-  border-left: 4px solid var(--agri-primary-600);
   border-radius: var(--agri-radius-lg);
   background: var(--agri-surface);
   box-shadow: var(--agri-shadow-lg);

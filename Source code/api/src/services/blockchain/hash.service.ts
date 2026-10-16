@@ -30,3 +30,10 @@ export const toCanonicalJson = (data: Record<string, unknown>): string =>
 
 export const hashEventData = (data: Record<string, unknown>): string =>
   ethers.keccak256(ethers.toUtf8Bytes(toCanonicalJson(data)));
+
+export const hashEventDataLegacy = (
+  data: Record<string, unknown>
+): string =>
+  ethers.keccak256(
+    ethers.toUtf8Bytes(JSON.stringify(data, Object.keys(data).sort()))
+  );

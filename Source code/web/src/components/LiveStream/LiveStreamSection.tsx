@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import type { LiveCamera } from '../../core/types';
+import PhoneCameraPlayer from './PhoneCameraPlayer';
 import { colors, spacing, borderRadius, shadows, typography } from '../../core/theme';
 
 const toEmbedUrl = (url: string): string | null => {
@@ -28,7 +29,12 @@ const toEmbedUrl = (url: string): string | null => {
 };
 
 const LiveStreamPlayer: React.FC<{ camera: LiveCamera }> = ({ camera }) => {
+  const isPhoneCamera = camera.stream_url.trim().toLowerCase().startsWith('phone://');
   const embedUrl = useMemo(() => toEmbedUrl(camera.stream_url), [camera.stream_url]);
+
+  if (isPhoneCamera) {
+    return <PhoneCameraPlayer streamUrl={camera.stream_url} name={camera.name} />;
+  }
 
   if (embedUrl) {
     return (

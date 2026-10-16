@@ -196,7 +196,7 @@ const ProductDetailPage: React.FC = () => {
       {(error || notice) && (
         <div className={`product-detail-alert ${error ? 'is-error' : 'is-success'}`}>
           {error || notice}
-          <button type="button" onClick={() => { setError(''); setNotice(''); }}>×</button>
+          <button type="button" aria-label="Đóng thông báo" onClick={() => { setError(''); setNotice(''); }}>×</button>
         </div>
       )}
 

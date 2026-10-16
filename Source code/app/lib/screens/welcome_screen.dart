@@ -12,7 +12,7 @@ class WelcomeScreen extends StatelessWidget {
         builder: (context, constraints) {
           final compact = constraints.maxHeight < 760;
           final contentWidth = constraints.maxWidth.clamp(0.0, 560.0);
-          final panelHeight = (constraints.maxHeight * 0.28)
+          final panelHeight = (constraints.maxHeight * 0.34)
               .clamp(compact ? 248.0 : 264.0, compact ? 276.0 : 292.0)
               .toDouble();
           final titleSize = constraints.maxWidth < 390 ? 31.0 : 35.0;
@@ -160,6 +160,16 @@ class WelcomeScreen extends StatelessWidget {
                                 onTap: () => Navigator.pushNamed(
                                   context,
                                   AppRouter.scanner,
+                                ),
+                              ),
+                              const SizedBox(height: 7),
+                              _WelcomeActionButton(
+                                label: 'Điện thoại làm camera',
+                                icon: Icons.videocam_outlined,
+                                soft: true,
+                                onTap: () => Navigator.pushNamed(
+                                  context,
+                                  AppRouter.phoneCamera,
                                 ),
                               ),
                             ],

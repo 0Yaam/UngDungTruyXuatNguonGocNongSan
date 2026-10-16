@@ -3,12 +3,9 @@ import { useParams } from 'react-router-dom';
 import BlockchainBadge from '../../components/BlockchainBadge/BlockchainBadge';
 import FarmingAreaMap from '../../components/Map/FarmingAreaMap';
 import QRCodeGenerator from '../../components/QRCode/QRCodeGenerator';
-<<<<<<< HEAD
 import LiveStreamSection from '../../components/LiveStream/LiveStreamSection';
-import { colors, spacing, borderRadius, shadows, typography } from '../../core/theme';
-import { useAuth } from '../../core/hooks/useAuth';
-=======
 import { traceEventApi } from '../../core/api/traceEvent.api';
+import { useAuth } from '../../core/hooks/useAuth';
 import {
   borderRadius,
   colors,
@@ -17,7 +14,6 @@ import {
   typography,
 } from '../../core/theme';
 import type { FullTrace, TraceEvent, VerifyResult } from '../../core/types';
->>>>>>> dan/main
 
 const pagePanel: React.CSSProperties = {
   background: colors.surface,
@@ -52,7 +48,6 @@ const certTone: Record<
 };
 
 const statusLabel: Record<string, string> = {
-<<<<<<< HEAD
   draft: 'Nháp',
   active: 'Đang theo dõi',
   completed: 'Hoàn tất',
@@ -62,20 +57,6 @@ const statusLabel: Record<string, string> = {
 const supplyOperationLabel: Record<string, string> = {
   TRANSFER: 'Bàn giao', SPLIT: 'Tách lô', MERGE: 'Gộp lô', PROCESSING: 'Chế biến',
   WAREHOUSE_IN: 'Nhập kho', WAREHOUSE_OUT: 'Xuất kho', TRANSPORT: 'Vận chuyển', RECALL: 'Thu hồi',
-};
-
-const certTypeColors: Record<string, { bg: string; text: string; border: string }> = {
-  VietGAP: { bg: '#dcfce7', text: '#166534', border: '#86efac' },
-  GlobalGAP: { bg: '#dbeafe', text: '#1d4ed8', border: '#93c5fd' },
-  Organic: { bg: '#fef3c7', text: '#92400e', border: '#fcd34d' },
-  HACCP: { bg: '#fce7f3', text: '#be185d', border: '#f9a8d4' },
-  ISO22000: { bg: '#e0e7ff', text: '#4338ca', border: '#a5b4fc' },
-  Other: { bg: '#f3f4f6', text: '#374151', border: '#d1d5db' },
-=======
-  draft: 'Nhap',
-  active: 'Dang theo doi',
-  completed: 'Hoan tat',
->>>>>>> dan/main
 };
 
 const TraceDetailPage: React.FC = () => {
@@ -94,7 +75,7 @@ const TraceDetailPage: React.FC = () => {
   useEffect(() => {
     if (!productId) {
       setLoading(false);
-      setError('Khong tim thay ma san pham.');
+      setError('Không tìm thấy mã sản phẩm.');
       return;
     }
 
@@ -111,7 +92,7 @@ const TraceDetailPage: React.FC = () => {
       })
       .catch((err: any) => {
         if (mounted) {
-          setError(err?.message || 'Khong tim thay thong tin truy xuat');
+          setError(err?.message || 'Không tìm thấy thông tin truy xuất');
         }
       })
       .finally(() => {
@@ -140,7 +121,6 @@ const TraceDetailPage: React.FC = () => {
     }
   }, []);
 
-<<<<<<< HEAD
   const handleRetry = useCallback(async (eventId: string) => {
     setRetrying(eventId);
     setRetryError((prev) => ({ ...prev, [eventId]: '' }));
@@ -165,7 +145,7 @@ const TraceDetailPage: React.FC = () => {
       setRetrying(null);
     }
   }, []);
-=======
+
   const overview = useMemo(() => {
     if (!trace) {
       return null;
@@ -179,7 +159,6 @@ const TraceDetailPage: React.FC = () => {
       certifications: trace.product.farming_area?.certifications?.length || 0,
     };
   }, [trace]);
->>>>>>> dan/main
 
   if (loading) {
     return (
@@ -194,7 +173,7 @@ const TraceDetailPage: React.FC = () => {
         }}
       >
         <div>
-          <div style={{ fontSize: 34, marginBottom: spacing[3] }}>Dang tai...</div>
+          <div style={{ fontSize: 34, marginBottom: spacing[3] }}>Đang tải...</div>
           <p style={{ margin: 0, color: colors.textSecondary }}>
             He thong dang lay du lieu truy xuat va blockchain.
           </p>
@@ -220,39 +199,21 @@ const TraceDetailPage: React.FC = () => {
             color: '#B91C1C',
           }}
         >
-          Khong tim thay
+          Không tìm thấy
         </h2>
         <p style={{ margin: 0, color: '#991B1B' }}>
-          {error || 'Khong co du lieu truy xuat cho san pham nay.'}
+          {error || 'Không có dữ liệu truy xuất cho sản phẩm này.'}
         </p>
       </div>
     );
   }
 
-<<<<<<< HEAD
   const { product, events, qualityInspections = [], supplyChainRecords = [], onChain } = trace;
-  const farmingArea = product.farming_area as any;
-  const certifications = farmingArea?.certifications || [];
-
-  return (
-    <div className="trace-public-page" style={{ maxWidth: 1000, margin: '0 auto' }}>
-      {/* Hero Section - Product Info */}
-      <div style={{
-        background: `linear-gradient(135deg, ${colors.primary[600]} 0%, ${colors.primary[700]} 100%)`,
-        borderRadius: borderRadius.xl,
-        padding: spacing[8],
-        color: 'white',
-        marginBottom: spacing[6],
-        boxShadow: shadows.lg,
-      }}>
-        <div style={{ display: 'flex', gap: spacing[8], alignItems: 'flex-start', flexWrap: 'wrap' }}>
-=======
-  const { product, events, onChain } = trace;
   const farmingArea = product.farming_area;
   const certifications = farmingArea?.certifications || [];
 
   return (
-    <div style={{ display: 'grid', gap: spacing[6], maxWidth: 1120, margin: '0 auto' }}>
+    <div className="trace-public-page" style={{ display: 'grid', gap: spacing[6], maxWidth: 1120, margin: '0 auto' }}>
       <section
         style={{
           ...pagePanel,
@@ -263,7 +224,6 @@ const TraceDetailPage: React.FC = () => {
         }}
       >
         <div style={{ display: 'flex', gap: spacing[6], flexWrap: 'wrap', alignItems: 'flex-start' }}>
->>>>>>> dan/main
           <div style={{ flex: 1, minWidth: 300 }}>
             <div
               style={{
@@ -371,34 +331,26 @@ const TraceDetailPage: React.FC = () => {
         </div>
       </section>
 
-<<<<<<< HEAD
       <LiveStreamSection cameras={product.live_cameras} />
 
       {supplyChainRecords.length > 0 && (
-        <div style={{
-          background: colors.surface,
-          borderRadius: borderRadius.xl,
-          padding: spacing[6],
-          border: `1px solid ${colors.neutral[200]}`,
-          boxShadow: shadows.sm,
-          marginBottom: spacing[6],
-        }}>
+        <section style={{ ...pagePanel, padding: spacing[6] }}>
           <div style={{ marginBottom: spacing[5] }}>
-            <h2 style={{ margin: 0, fontSize: typography.sizes.xl }}>🚚 Hành trình chuỗi cung ứng</h2>
+            <h2 style={{ margin: 0, fontSize: typography.sizes.xl }}>Hành trình chuỗi cung ứng</h2>
             <p style={{ margin: `${spacing[1]} 0 0`, color: colors.textSecondary, fontSize: typography.sizes.sm }}>
               {supplyChainRecords.length} hoạt động từ sản xuất đến phân phối
             </p>
           </div>
           <div style={{ display: 'grid', gap: spacing[3] }}>
             {supplyChainRecords.map((record, index) => (
-              <div key={record._id} style={{ display: 'grid', gridTemplateColumns: '38px 1fr auto', gap: spacing[3], alignItems: 'start' }}>
+              <div key={record._id} style={{ display: 'grid', gridTemplateColumns: '38px minmax(0, 1fr) auto', gap: spacing[3], alignItems: 'start' }}>
                 <div style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', borderRadius: borderRadius.lg, background: record.operation_type === 'RECALL' ? '#fff0f0' : colors.primary[50], color: record.operation_type === 'RECALL' ? '#b91c1c' : colors.primary[700], fontWeight: 800 }}>
                   {record.operation_type === 'RECALL' ? '!' : index + 1}
                 </div>
                 <div style={{ paddingBottom: spacing[3], borderBottom: index < supplyChainRecords.length - 1 ? `1px solid ${colors.neutral[200]}` : 'none' }}>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing[2], alignItems: 'center' }}>
                     <strong style={{ fontSize: typography.sizes.sm }}>{record.title}</strong>
-                    <span style={{ padding: `${spacing[1]} ${spacing[2]}`, borderRadius: borderRadius.full, background: colors.primary[50], color: colors.primary[700], fontSize: typography.sizes.xs, fontWeight: 600 }}>{supplyOperationLabel[record.operation_type]}</span>
+                    <span style={{ padding: `${spacing[1]} ${spacing[2]}`, borderRadius: borderRadius.full, background: colors.primary[50], color: colors.primary[700], fontSize: typography.sizes.xs, fontWeight: 600 }}>{supplyOperationLabel[record.operation_type] || record.operation_type}</span>
                   </div>
                   <p style={{ margin: `${spacing[1]} 0`, color: colors.textSecondary, fontSize: typography.sizes.xs }}>{record.description || record.location || 'Hoạt động chuỗi cung ứng'}</p>
                   <div style={{ color: colors.textMuted, fontSize: typography.sizes.xs }}>
@@ -409,39 +361,9 @@ const TraceDetailPage: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Info Cards Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: spacing[5], marginBottom: spacing[6] }}>
-        
-        {/* Farming Area Card */}
-        {farmingArea && (
-          <div style={{
-            background: colors.surface,
-            borderRadius: borderRadius.xl,
-            padding: spacing[5],
-            border: `1px solid ${colors.neutral[200]}`,
-            boxShadow: shadows.sm,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing[3], marginBottom: spacing[4] }}>
-              <div style={{ 
-                width: 44, height: 44, borderRadius: borderRadius.lg,
-                background: colors.primary[100], color: colors.primary[600],
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 22,
-              }}>
-                🌾
-              </div>
-              <div>
-                <h3 style={{ margin: 0, fontSize: typography.sizes.lg, fontWeight: typography.weights.semibold }}>
-                  Vùng canh tác
-                </h3>
-                <p style={{ margin: 0, color: colors.textSecondary, fontSize: typography.sizes.sm }}>
-                  Thông tin nơi sản xuất
-                </p>
-              </div>
-=======
       <section
         style={{
           display: 'grid',
@@ -463,7 +385,7 @@ const TraceDetailPage: React.FC = () => {
             text: '#1D4ED8',
           },
           {
-            label: 'Chung nhan',
+            label: 'Chứng nhận',
             value: `${overview.certifications}`,
             tone: '#FEF3C7',
             text: '#92400E',
@@ -485,7 +407,6 @@ const TraceDetailPage: React.FC = () => {
               }}
             >
               {item.label}
->>>>>>> dan/main
             </div>
             <div
               style={{
@@ -526,7 +447,7 @@ const TraceDetailPage: React.FC = () => {
                   fontSize: typography.sizes.sm,
                 }}
               >
-                Ban do, dia chi va thong tin chu so huu
+                Bản đồ, địa chỉ và thông tin chủ sở hữu
               </p>
             </div>
 
@@ -572,7 +493,7 @@ const TraceDetailPage: React.FC = () => {
             <FarmingAreaMap
               coordinates={farmingArea.coordinates}
               address={farmingArea.address}
-              title="Ban do vung canh tac"
+              title="Bản đồ vùng canh tác"
               height={240}
             />
           </div>
@@ -588,7 +509,7 @@ const TraceDetailPage: React.FC = () => {
                   fontWeight: typography.weights.bold,
                 }}
               >
-                Chung nhan chat luong
+                Chứng nhận chất lượng
               </h2>
               <p
                 style={{
@@ -597,7 +518,7 @@ const TraceDetailPage: React.FC = () => {
                   fontSize: typography.sizes.sm,
                 }}
               >
-                Danh sach chung nhan dang gan voi vung trong
+                Danh sách chứng nhận đang gắn với vùng trồng
               </p>
             </div>
 
@@ -656,7 +577,6 @@ const TraceDetailPage: React.FC = () => {
           </div>
         )}
 
-<<<<<<< HEAD
         {/* Quality inspection evidence */}
         {qualityInspections.length > 0 && (
           <div style={{
@@ -718,8 +638,6 @@ const TraceDetailPage: React.FC = () => {
         )}
 
         {/* Blockchain Card */}
-=======
->>>>>>> dan/main
         {onChain && (
           <div style={{ ...pagePanel, padding: spacing[5], display: 'grid', gap: spacing[4] }}>
             <div>
@@ -980,20 +898,20 @@ const TraceDetailPage: React.FC = () => {
                           }}
                         >
                           {verifying === event._id
-                            ? 'Dang kiem tra...'
+                            ? 'Đang kiểm tra...'
                             : 'Xac minh blockchain'}
                         </button>
                       )}
 
                       {isAuthenticated &&
                         user?.role !== 'consumer' &&
-                        ['failed', 'skipped'].includes(evt.onChainStatus) && (
+                        ['failed', 'skipped'].includes(event.onChainStatus) && (
                           <button
-                            onClick={() => handleRetry(evt._id)}
-                            disabled={retrying === evt._id}
+                            onClick={() => handleRetry(event._id)}
+                            disabled={retrying === event._id}
                             style={{
                               fontSize: typography.sizes.xs,
-                              cursor: retrying === evt._id ? 'not-allowed' : 'pointer',
+                              cursor: retrying === event._id ? 'not-allowed' : 'pointer',
                               padding: `${spacing[2]} ${spacing[3]}`,
                               border: '1px solid #f59e0b',
                               borderRadius: borderRadius.md,
@@ -1002,7 +920,7 @@ const TraceDetailPage: React.FC = () => {
                               fontWeight: typography.weights.medium,
                             }}
                           >
-                            {retrying === evt._id
+                            {retrying === event._id
                               ? '⏳ Đang ghi lại...'
                               : '↻ Ghi lại blockchain'}
                           </button>
@@ -1021,14 +939,14 @@ const TraceDetailPage: React.FC = () => {
                         >
                           {result.verified
                             ? 'Du lieu khop voi blockchain'
-                            : 'Du lieu khong khop voi blockchain'}
+                            : 'Dữ liệu không khớp với blockchain'}
                         </div>
                       )}
 
 
-                      {retryError[evt._id] && (
+                      {retryError[event._id] && (
                         <span style={{ fontSize: typography.sizes.xs, color: '#b91c1c' }}>
-                          {retryError[evt._id]}
+                          {retryError[event._id]}
                         </span>
                       )}
                     </div>

@@ -1,5 +1,6 @@
 import 'package:app/core/theme.dart';
 import 'package:app/models/live_camera.dart';
+import 'package:app/widgets/phone_camera_viewer.dart';
 import 'package:app/widgets/live_stream_embed.dart';
 import 'package:app/widgets/liquid_glass.dart';
 import 'package:flutter/foundation.dart';
@@ -60,7 +61,7 @@ class _LiveCameraSectionState extends State<LiveCameraSection> {
     _controller = null;
     _error = null;
 
-    if (kIsWeb || _isEmbedOnly(camera.streamUrl)) {
+    if (camera.isPhoneCamera || kIsWeb || _isEmbedOnly(camera.streamUrl)) {
       if (mounted) setState(() {});
       return;
     }
@@ -133,7 +134,12 @@ class _LiveCameraSectionState extends State<LiveCameraSection> {
                 borderRadius: BorderRadius.circular(18),
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: useEmbeddedPlayer
+                  child: camera.isPhoneCamera
+                      ? PhoneCameraViewer(
+                          key: ValueKey(camera.streamUrl),
+                          camera: camera,
+                        )
+                      : useEmbeddedPlayer
                       ? LiveStreamEmbed(
                           key: ValueKey(camera.streamUrl),
                           url: camera.streamUrl,

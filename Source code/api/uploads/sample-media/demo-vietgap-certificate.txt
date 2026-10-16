@@ -1,0 +1,7 @@
+CHUNG NHAN DEMO VIETGAP
+
+Tai lieu nay chi phuc vu du lieu minh hoa AgriTrace.
+So chung nhan: DEMO-VIETGAP-2026-001
+Pham vi: Canh tac, thu hoach va so che xoai.
+Ngay cap: 15/06/2026
+Ngay het han: 15/06/2027

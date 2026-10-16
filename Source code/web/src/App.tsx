@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import {
   BrowserRouter,
   Link,
@@ -10,27 +10,29 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import AccountPage from './pages/Account/AccountPage';
-import AdminPage from './pages/Admin/AdminPage';
-import CertificationPage from './pages/Certification/CertificationPage';
-import DashboardPage from './pages/Dashboard/DashboardPage';
-import DesignLabPage from './pages/DesignLab/DesignLabPage';
-import DiseaseDetectionPage from './pages/DiseaseDetection/DiseaseDetectionPage';
-import ExportPage from './pages/Export/ExportPage';
-import FarmingAreaPage from './pages/FarmingArea/FarmingAreaPage';
-import JournalPage from './pages/Journal/JournalPage';
-import LoginPage from './pages/Login/LoginPage';
-import OverviewPage from './pages/Overview/OverviewPage';
-import ProductDetailPage from './pages/ProductDetail/ProductDetailPage';
-import QualityInspectionPage from './pages/QualityInspection/QualityInspectionPage';
-import SupplyChainPage from './pages/SupplyChain/SupplyChainPage';
-import TraceDetailPage from './pages/TraceDetail/TraceDetailPage';
 import { AuthProvider } from './core/context/AuthContext';
 import { useAuth } from './core/hooks/useAuth';
 import './styles/shell.css';
 
+const AccountPage = React.lazy(() => import('./pages/Account/AccountPage'));
+const AdminPage = React.lazy(() => import('./pages/Admin/AdminPage'));
+const CameraPage = React.lazy(() => import('./pages/Camera/CameraPage'));
+const CertificationPage = React.lazy(() => import('./pages/Certification/CertificationPage'));
+const DashboardPage = React.lazy(() => import('./pages/Dashboard/DashboardPage'));
+const DesignLabPage = React.lazy(() => import('./pages/DesignLab/DesignLabPage'));
+const ExportPage = React.lazy(() => import('./pages/Export/ExportPage'));
+const FarmingAreaPage = React.lazy(() => import('./pages/FarmingArea/FarmingAreaPage'));
+const JournalPage = React.lazy(() => import('./pages/Journal/JournalPage'));
+const LoginPage = React.lazy(() => import('./pages/Login/LoginPage'));
+const OverviewPage = React.lazy(() => import('./pages/Overview/OverviewPage'));
+const ProductDetailPage = React.lazy(() => import('./pages/ProductDetail/ProductDetailPage'));
+const QualityInspectionPage = React.lazy(() => import('./pages/QualityInspection/QualityInspectionPage'));
+const SupplyChainPage = React.lazy(() => import('./pages/SupplyChain/SupplyChainPage'));
+const TraceDetailPage = React.lazy(() => import('./pages/TraceDetail/TraceDetailPage'));
+
 type IconName =
   | 'bell'
+  | 'camera'
   | 'certificate'
   | 'chevronDown'
   | 'close'
@@ -55,6 +57,16 @@ type NavigationItem = {
   label: string;
   shortLabel?: string;
   icon: IconName;
+  section: 'main' | 'production' | 'quality' | 'traceability' | 'operations' | 'system';
+};
+
+const navigationSectionLabels: Record<NavigationItem['section'], string> = {
+  main: 'Tổng quan',
+  production: 'Sản xuất',
+  quality: 'Chất lượng & tin cậy',
+  traceability: 'Truy xuất',
+  operations: 'Vận hành',
+  system: 'Hệ thống',
 };
 
 const Icon: React.FC<{ name: IconName; size?: number }> = ({ name, size = 21 }) => {
@@ -63,6 +75,12 @@ const Icon: React.FC<{ name: IconName; size?: number }> = ({ name, size = 21 }) 
       <>
         <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
         <path d="M10 22h4" />
+      </>
+    ),
+    camera: (
+      <>
+        <rect x="3" y="6" width="14" height="12" rx="2" />
+        <path d="m17 10 4-2v8l-4-2M8 10.5h4M10 8.5v4" />
       </>
     ),
     certificate: (
@@ -237,19 +255,19 @@ const AppShell: React.FC = () => {
 
   const navigation = useMemo<NavigationItem[]>(
     () => [
-      { to: '/', label: 'Tổng quan', shortLabel: 'Tổng quan', icon: 'dashboard' },
-      { to: '/products', label: 'Lô nông sản', shortLabel: 'Lô hàng', icon: 'package' },
-      { to: '/farming-areas', label: 'Vùng trồng', icon: 'pin' },
-      { to: '/add-event', label: 'Nhật ký canh tác', shortLabel: 'Nhật ký', icon: 'journal' },
-      { to: '/certifications', label: 'Chứng nhận', icon: 'certificate' },
-      { to: '/supply-chain', label: 'Chuỗi cung ứng', icon: 'supply' },
-      { to: '/quality-inspections', label: 'Kiểm nghiệm', icon: 'quality' },
+      { to: '/', label: 'Tổng quan', shortLabel: 'Tổng quan', icon: 'dashboard', section: 'main' },
+      { to: '/products', label: 'Lô nông sản', shortLabel: 'Lô hàng', icon: 'package', section: 'production' },
+      { to: '/farming-areas', label: 'Vùng trồng', icon: 'pin', section: 'production' },
+      { to: '/add-event', label: 'Nhật ký canh tác', shortLabel: 'Nhật ký', icon: 'journal', section: 'production' },
       ...(user?.role !== 'consumer'
-        ? [{ to: '/disease-detection', label: 'Nhận diện sâu bệnh', icon: 'disease' as IconName }]
+        ? [{ to: '/cameras', label: 'Giám sát nông trại', icon: 'camera' as IconName, section: 'production' as const }]
         : []),
-      { to: '/export', label: 'Xuất báo cáo', shortLabel: 'Báo cáo', icon: 'report' },
+      { to: '/quality-inspections', label: 'Kiểm nghiệm', icon: 'quality', section: 'quality' },
+      { to: '/certifications', label: 'Chứng nhận', icon: 'certificate', section: 'quality' },
+      { to: '/supply-chain', label: 'Chuỗi cung ứng', icon: 'supply', section: 'traceability' },
+      { to: '/export', label: 'Xuất báo cáo', shortLabel: 'Báo cáo', icon: 'report', section: 'operations' },
       ...(user?.role === 'admin'
-        ? [{ to: '/admin', label: 'Quản trị', icon: 'settings' as IconName }]
+        ? [{ to: '/admin', label: 'Quản trị', icon: 'settings' as IconName, section: 'system' as const }]
         : []),
     ],
     [user?.role]
@@ -258,6 +276,10 @@ const AppShell: React.FC = () => {
   const primaryMobileNavigation = navigation.filter((item) =>
     ['/', '/products', '/add-event', '/export'].includes(item.to)
   );
+
+  const currentNavigation = navigation.find((item) => item.to === '/'
+    ? location.pathname === '/'
+    : location.pathname.startsWith(item.to));
 
   useEffect(() => {
     setDrawerOpen(false);
@@ -311,24 +333,30 @@ const AppShell: React.FC = () => {
 
   const renderNavigation = (mobile = false) => (
     <nav className="agr-nav" aria-label={mobile ? 'Điều hướng trên thiết bị di động' : 'Điều hướng chính'}>
-      <span className="agr-nav__section">Quản lý truy xuất</span>
-      {navigation.map((item) => (
-        <NavLink
-          className={({ isActive }) => `agr-nav__link${isActive ? ' agr-nav__link--active' : ''}`}
-          end={item.to === '/'}
-          key={item.to}
-          title={sidebarCompact && !mobile ? item.label : undefined}
-          to={item.to}
-        >
-          <span className="agr-nav__icon"><Icon name={item.icon} /></span>
-          <span className="agr-nav__label">{item.label}</span>
-        </NavLink>
+      {navigation.map((item, index) => (
+        <React.Fragment key={item.to}>
+          {(index === 0 || navigation[index - 1].section !== item.section) && (
+            <span className="agr-nav__section">{navigationSectionLabels[item.section]}</span>
+          )}
+          <NavLink
+            className={({ isActive }) => `agr-nav__link${isActive ? ' agr-nav__link--active' : ''}`}
+            end={item.to === '/'}
+            title={sidebarCompact && !mobile ? item.label : undefined}
+            to={item.to}
+          >
+            <span className="agr-nav__icon"><Icon name={item.icon} /></span>
+            <span className="agr-nav__label">{item.label}</span>
+          </NavLink>
+        </React.Fragment>
       ))}
     </nav>
   );
 
   return (
-    <div className={`agr-shell${sidebarCompact ? ' agr-shell--compact' : ''}`}>
+    <div
+      className={`agr-shell${sidebarCompact ? ' agr-shell--compact' : ''}`}
+      data-route={location.pathname.split('/').filter(Boolean)[0] || 'overview'}
+    >
       <a className="agr-skip-link" href="#main-content">Đi đến nội dung chính</a>
 
       <aside className={`agr-sidebar${drawerOpen ? ' agr-sidebar--open' : ''}`} id="primary-sidebar">
@@ -406,6 +434,11 @@ const AppShell: React.FC = () => {
               <Icon name="menu" size={23} />
             </button>
             <Brand />
+          </div>
+
+          <div className="agr-topbar__context" aria-live="polite">
+            <span>Không gian làm việc</span>
+            <strong>{currentNavigation?.label || 'AgriTrace'}</strong>
           </div>
 
           <form className="agr-search" onSubmit={handleSearch} role="search">
@@ -508,7 +541,7 @@ const AppShell: React.FC = () => {
           </div>
         </header>
 
-        <div className="agr-shell__main" id="main-content" role="main" tabIndex={-1}>
+        <div className={`agr-shell__main${location.pathname === '/cameras' ? ' agr-shell__main--monitoring' : ''}`} id="main-content" role="main" tabIndex={-1}>
           <Outlet />
         </div>
       </div>
@@ -550,12 +583,13 @@ const DiseaseDetectionRoute: React.FC = () => {
   return user?.role === 'consumer' ? (
     <Navigate to="/" replace />
   ) : (
-    <DiseaseDetectionPage />
+    <Navigate to="/cameras?mode=plant-disease" replace />
   );
 };
 
 const AppRoutes: React.FC = () => (
-  <Routes>
+  <Suspense fallback={<div className={'agri-route-loader'} role={'status'} aria-live={'polite'}><span />{'\u0110ang t\u1ea3i giao di\u1ec7n...'}</div>}>
+    <Routes>
     <Route path="/login" element={<LoginPage />} />
     <Route path="/trace/:productId" element={<TraceDetailPage />} />
 
@@ -570,6 +604,7 @@ const AppRoutes: React.FC = () => (
         <Route path="/supply-chain" element={<SupplyChainPage />} />
         <Route path="/certifications" element={<CertificationPage />} />
         <Route path="/disease-detection" element={<DiseaseDetectionRoute />} />
+        <Route path="/cameras" element={<CameraPage />} />
         <Route path="/design-lab" element={<DesignLabPage />} />
         <Route path="/quality-inspections" element={<QualityInspectionPage />} />
         <Route path="/export" element={<ExportPage />} />
@@ -578,7 +613,8 @@ const AppRoutes: React.FC = () => (
     </Route>
 
     <Route path="*" element={<Navigate to="/" replace />} />
-  </Routes>
+    </Routes>
+  </Suspense>
 );
 
 const App: React.FC = () => (

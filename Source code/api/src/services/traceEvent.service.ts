@@ -13,12 +13,8 @@ import {
   hashEventData,
   createBatchOnChain,
   batchExistsOnChain,
-<<<<<<< HEAD
   assertContractDeployed,
 } from './blockchain.service';
-=======
-} from './blockchain';
->>>>>>> dan/main
 import { notifyTraceEventAdded } from './notification.service';
 import env from '../config/env';
 import QualityInspection from '../models/QualityInspection';
@@ -27,13 +23,6 @@ import SupplyChainRecord from '../models/SupplyChainRecord';
 const isBlockchainConfigured = () =>
   !!(env.CONTRACT_ADDRESS && env.BLOCKCHAIN_PRIVATE_KEY);
 
-<<<<<<< HEAD
-const blockchainErrorMessage = (error: any): string => {
-  const rawMessage = String(
-    error?.shortMessage || error?.reason || error?.message || 'Lỗi blockchain không xác định'
-  );
-  const normalized = rawMessage.toLowerCase();
-=======
 const BLOCKCHAIN_READ_TIMEOUT_MS = 2500;
 
 const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number) =>
@@ -44,11 +33,11 @@ const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number) =>
     }),
   ]);
 
-const normalizeImages = (
-  images?: Array<string | { path?: string; filename?: string }>
-) => {
-  if (!Array.isArray(images)) return [];
->>>>>>> dan/main
+const blockchainErrorMessage = (error: any): string => {
+  const rawMessage = String(
+    error?.shortMessage || error?.reason || error?.message || 'Lỗi blockchain không xác định'
+  );
+  const normalized = rawMessage.toLowerCase();
 
   if (
     error?.code === 'ECONNREFUSED' ||

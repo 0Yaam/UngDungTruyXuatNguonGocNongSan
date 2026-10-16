@@ -1,26 +1,23 @@
 import 'package:app/screens/account_screen.dart';
 import 'package:app/screens/camera_management_screen.dart';
+import 'package:app/screens/camera_center_screen.dart';
 import 'package:app/screens/add_event_screen.dart';
 import 'package:app/screens/create_product_screen.dart';
 import 'package:app/screens/farmer/farmer_dashboard_screen.dart';
 import 'package:app/screens/forgot_password_screen.dart';
 import 'package:app/screens/edit_product_screen.dart';
-import 'package:app/screens/disease_detection_screen.dart';
 import 'package:app/screens/management_hub_screen.dart';
 import 'package:app/screens/product_trash_screen.dart';
+import 'package:app/screens/phone_camera_publisher_screen.dart';
 import 'package:app/models/batch.dart';
 import 'package:app/screens/login_screen.dart';
 import 'package:app/screens/notifications_screen.dart';
 import 'package:app/screens/qr_scanner_screen.dart';
 import 'package:app/screens/register_screen.dart';
-<<<<<<< HEAD
 import 'package:app/screens/timeline_dashboard_screen.dart';
+import 'package:app/screens/trace_timeline_screen.dart';
 import 'package:app/screens/welcome_screen.dart';
 import 'package:app/widgets/app_tab_scaffold.dart';
-=======
-import 'package:app/screens/trace_timeline_screen.dart';
-import 'package:app/screens/timeline_screen.dart';
->>>>>>> dan/main
 import 'package:flutter/material.dart';
 
 class AppRouter {
@@ -41,6 +38,7 @@ class AppRouter {
   static const editProduct = '/edit-product';
   static const diseaseDetection = '/disease-detection';
   static const productTrash = '/product-trash';
+  static const phoneCamera = '/phone-camera';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final uri = Uri.parse(settings.name ?? '/');
@@ -50,10 +48,6 @@ class AppRouter {
         return _page(const WelcomeScreen());
 
       case timeline:
-<<<<<<< HEAD
-      case trace:
-=======
->>>>>>> dan/main
         final batchId =
             uri.queryParameters['batchId'] ??
             uri.queryParameters['productId'] ??
@@ -69,6 +63,9 @@ class AppRouter {
             uri.queryParameters['batchId'] ??
             (settings.arguments as String?);
         return _page(TraceTimelineScreen(productId: productId ?? ''));
+
+      case phoneCamera:
+        return _page(const PhoneCameraPublisherScreen());
 
       case login:
         return _page(const LoginScreen());
@@ -110,9 +107,12 @@ class AppRouter {
             uri.queryParameters['productId'] ??
             (settings.arguments as String?);
         if (batchId == null || batchId.isEmpty) {
-          return _tabPage(const FarmerDashboardScreen(), AppTab.journal);
+          return _tabPage(const CameraCenterScreen(), AppTab.journal);
         }
-        return _tabPage(CameraManagementScreen(batchId: batchId), AppTab.journal);
+        return _tabPage(
+          CameraManagementScreen(batchId: batchId),
+          AppTab.journal,
+        );
 
       case management:
         final tab = int.tryParse(uri.queryParameters['tab'] ?? '') ?? 0;
@@ -129,7 +129,10 @@ class AppRouter {
         return _tabPage(EditProductScreen(batch: batch), AppTab.journal);
 
       case diseaseDetection:
-        return _tabPage(const DiseaseDetectionScreen(), AppTab.disease);
+        return _tabPage(
+          const CameraCenterScreen(initialTask: 'plant-disease'),
+          AppTab.disease,
+        );
 
       case productTrash:
         return _tabPage(const ProductTrashScreen(), AppTab.trash);

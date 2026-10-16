@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
-import ProductCameraModal from '../../components/LiveStream/ProductCameraModal';
 import { farmingAreaApi, FarmingArea } from '../../core/api/farmingArea.api';
 import { productApi } from '../../core/api/product.api';
 import { useAuth } from '../../core/hooks/useAuth';
@@ -212,7 +211,6 @@ interface ProductActionsProps {
   canArchive: boolean;
   onEdit: (product: Product) => void;
   onQr: (product: Product) => void;
-  onCamera: (product: Product) => void;
   onArchive: (product: Product) => void;
 }
 
@@ -221,7 +219,6 @@ const ProductActions: React.FC<ProductActionsProps> = ({
   canArchive,
   onEdit,
   onQr,
-  onCamera,
   onArchive,
 }) => (
   <div className="dash-row-actions">
@@ -234,9 +231,9 @@ const ProductActions: React.FC<ProductActionsProps> = ({
     <Link className="dash-icon-button" to={`/add-event?product=${product._id}`} title="Ghi nhật ký" aria-label={`Ghi nhật ký ${product.name}`}>
       <Icon name="journal" size={17} />
     </Link>
-    <button className="dash-icon-button" type="button" onClick={() => onCamera(product)} title="Camera" aria-label={`Quản lý camera ${product.name}`}>
+    <Link className="dash-icon-button" to={`/cameras?product=${product._id}`} title="Giám sát vùng trồng" aria-label={`Mở camera liên quan đến ${product.name}`}>
       <Icon name="camera" size={17} />
-    </button>
+    </Link>
     <button className="dash-icon-button" type="button" onClick={() => onEdit(product)} title="Chỉnh sửa" aria-label={`Chỉnh sửa ${product.name}`}>
       <Icon name="edit" size={17} />
     </button>
@@ -259,7 +256,6 @@ const ProductList: React.FC<Omit<ProductListProps, 'product'>> = ({
   canArchive,
   onEdit,
   onQr,
-  onCamera,
   onArchive,
 }) => {
   if (!products.length) {
@@ -324,7 +320,6 @@ const ProductList: React.FC<Omit<ProductListProps, 'product'>> = ({
                       canArchive={canArchive}
                       onEdit={onEdit}
                       onQr={onQr}
-                      onCamera={onCamera}
                       onArchive={onArchive}
                     />
                   </td>
@@ -354,7 +349,7 @@ const ProductList: React.FC<Omit<ProductListProps, 'product'>> = ({
                 <span><Icon name="cube" size={15} />{formatNumber(product.current_quantity)} {product.unit || 'kg'}</span>
                 <span className={product.onChainBatchId ? 'is-verified' : ''}><Icon name="chain" size={15} />{product.onChainBatchId ? 'Đã xác thực' : 'Chờ đồng bộ'}</span>
               </div>
-              <ProductActions product={product} canArchive={canArchive} onEdit={onEdit} onQr={onQr} onCamera={onCamera} onArchive={onArchive} />
+              <ProductActions product={product} canArchive={canArchive} onEdit={onEdit} onQr={onQr} onArchive={onArchive} />
             </article>
           );
         })}
@@ -629,7 +624,6 @@ const DashboardPage: React.FC = () => {
   const [trashLoading, setTrashLoading] = useState(false);
   const [trashError, setTrashError] = useState('');
   const [qrProduct, setQrProduct] = useState<Product | null>(null);
-  const [cameraProduct, setCameraProduct] = useState<Product | null>(null);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
   const [confirmBusy, setConfirmBusy] = useState(false);
 
@@ -845,7 +839,6 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="dash-page">
       {notice && <div className={`dash-toast dash-toast--${notice.type}`} role="status"><Icon name={notice.type === 'success' ? 'check' : notice.type === 'error' ? 'warning' : 'history'} size={19} /><span>{notice.message}</span><button type="button" onClick={() => setNotice(null)} aria-label="Đóng thông báo"><Icon name="close" size={15} /></button></div>}
-      {cameraProduct && <ProductCameraModal product={cameraProduct} onClose={() => setCameraProduct(null)} onSaved={(updated) => { setProducts((current) => current.map((item) => item._id === updated._id ? updated : item)); setCameraProduct(updated); setNotice({ type: 'success', message: 'Đã cập nhật camera của lô.' }); }} />}
       {formOpen && <ProductFormModal editing={editing} form={form} setForm={setForm} areas={areas} categories={categories} submitting={submitting} error={formError} onClose={() => setFormOpen(false)} onSubmit={saveProduct} />}
       {qrProduct && <ModalShell title={`Mã QR · ${qrProduct.name}`} description="Quét mã để mở hồ sơ truy xuất công khai." size="small" onClose={() => setQrProduct(null)}><div className="dash-qr-modal"><QRCodeSVG value={`${window.location.origin}/trace/${qrProduct._id}`} size={220} level="H" marginSize={2} /><strong>{qrProduct.batch_code || qrProduct._id}</strong><Link className="dash-button dash-button--primary" to={`/trace/${qrProduct._id}`}>Mở hồ sơ truy xuất <Icon name="arrow" size={17} /></Link></div></ModalShell>}
       {trashOpen && <ModalShell title="Thùng rác lô nông sản" description="Khôi phục lô đã lưu trữ hoặc xóa vĩnh viễn khi không còn dữ liệu liên quan." onClose={() => setTrashOpen(false)}><div className="dash-trash-content">{trashError && <div className="dash-form-message dash-form-message--error">{trashError}</div>}{trashLoading ? <div className="dash-compact-empty"><span className="dash-spinner" /> Đang tải...</div> : !trashProducts.length ? <div className="dash-empty"><span><Icon name="trash" size={28} /></span><strong>Thùng rác đang trống</strong><p>Các lô đã lưu trữ sẽ xuất hiện tại đây.</p></div> : <div className="dash-trash-list">{trashProducts.map((product) => <article key={product._id}><ProductThumb product={product} /><div><strong>{product.name}</strong><span>{product.batch_code || product._id.slice(-8).toUpperCase()} · Xóa {formatDate(product.deletedAt)}</span></div><button className="dash-button dash-button--secondary" type="button" onClick={() => void restoreProduct(product)}><Icon name="restore" size={16} /> Khôi phục</button>{user?.role === 'admin' && <button className="dash-button dash-button--danger" type="button" onClick={() => setConfirmAction({ kind: 'permanent', product })}><Icon name="trash" size={16} /> Xóa hẳn</button>}</article>)}</div>}</div></ModalShell>}
@@ -875,7 +868,7 @@ const DashboardPage: React.FC = () => {
               <label className="dash-date-filter"><span className="sr-only">Lọc ngày tạo</span><input type="date" value={dateFilter} onChange={(event) => setDateFilter(event.target.value)} /></label>
               {hasFilters && <button className="dash-reset" type="button" onClick={resetFilters}><Icon name="refresh" size={15} /> Đặt lại</button>}
             </div>
-            <ProductList products={pagedProducts} startIndex={(page - 1) * pageSize} canArchive={canArchive} onEdit={openEdit} onQr={setQrProduct} onCamera={setCameraProduct} onArchive={(product) => setConfirmAction({ kind: 'archive', product })} />
+            <ProductList products={pagedProducts} startIndex={(page - 1) * pageSize} canArchive={canArchive} onEdit={openEdit} onQr={setQrProduct} onArchive={(product) => setConfirmAction({ kind: 'archive', product })} />
             {filteredProducts.length > 0 && <div className="dash-pagination"><p>Hiển thị <strong>{(page - 1) * pageSize + 1}–{Math.min(page * pageSize, filteredProducts.length)}</strong> trong {filteredProducts.length} lô</p><div><button type="button" disabled={page === 1} onClick={() => setPage((current) => current - 1)} aria-label="Trang trước">‹</button>{Array.from({ length: totalPages }, (_, index) => index + 1).filter((item) => item === 1 || item === totalPages || Math.abs(item - page) <= 1).map((item, index, list) => <React.Fragment key={item}>{index > 0 && item - list[index - 1] > 1 && <span>…</span>}<button type="button" className={item === page ? 'is-active' : ''} onClick={() => setPage(item)} aria-current={item === page ? 'page' : undefined}>{item}</button></React.Fragment>)}</div><label><span className="sr-only">Số dòng mỗi trang</span><select value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))}><option value={5}>5 / trang</option><option value={10}>10 / trang</option><option value={20}>20 / trang</option></select></label></div>}
           </section>
           <ActivityChart products={products} />

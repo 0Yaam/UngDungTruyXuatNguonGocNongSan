@@ -15,10 +15,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "ignoreDeprecations": "6.0",
     "baseUrl": "src",
-    "typeRoots": ["./node_modules/@types"],
-    "types": ["node", "react", "react-dom"]
+    "types": ["react", "react-dom"]
   },
   "include": ["src"]
 }

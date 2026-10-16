@@ -35,7 +35,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const { data } = await axiosClient.post<AuthResponse>('/auth/login', { email, password });
+    const response = await axiosClient.post<AuthResponse>('/auth/login', { email, password });
+    const data = (response.data || response) as AuthResponse;
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
     setToken(data.token);
@@ -43,7 +44,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const register = useCallback(async (body: { name: string; email: string; password: string }) => {
-    const { data } = await axiosClient.post<AuthResponse>('/auth/register', body);
+    const response = await axiosClient.post<AuthResponse>('/auth/register', body);
+    const data = (response.data || response) as AuthResponse;
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
     setToken(data.token);

@@ -8,6 +8,8 @@ import connectDB from './config/db';
 import routes from './routes';
 import errorHandler from './middlewares/error.middleware';
 import { UPLOAD_DIR } from './config/upload';
+import { attachLiveDiseaseWebSocket } from './services/liveDiseaseStream.service';
+import { attachPhoneCameraWebSocket } from './services/phoneCameraStream.service';
 
 const app = express();
 
@@ -38,12 +40,15 @@ const start = async () => {
     await connectDB(env.DB_URI);
     console.log('MongoDB connected');
 
-    app.listen(env.PORT, () => {
+    const server = app.listen(env.PORT, () => {
       console.log(`Server running at http://localhost:${env.PORT}`);
       console.log(`API base: http://localhost:${env.PORT}/api/v1`);
+      console.log(`Live disease WebSocket: ws://localhost:${env.PORT}${env.LIVE_DISEASE_PATH}`);
       console.log(`Blockchain RPC: ${env.BLOCKCHAIN_RPC_URL}`);
       console.log(`Contract: ${env.CONTRACT_ADDRESS || 'NOT SET'}`);
     });
+    attachLiveDiseaseWebSocket(server);
+    attachPhoneCameraWebSocket(server);
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);

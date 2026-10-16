@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import AgriLivingScene from '../../components/visual/AgriLivingScene';
 import { certificationApi } from '../../core/api/certification.api';
 import { productApi } from '../../core/api/product.api';
 import { qualityInspectionApi } from '../../core/api/qualityInspection.api';
@@ -237,14 +238,24 @@ const OverviewPage: React.FC = () => {
   return (
     <div className="overview-page">
       <header className="overview-hero">
-        <div>
-          <p className="overview-eyebrow">Bảng điều hành</p>
-          <h1>Tổng quan truy xuất</h1>
-          <p>Theo dõi nhanh sức khỏe dữ liệu, cảnh báo vận hành và các lô cần xử lý trong hệ thống.</p>
+        <div className="overview-hero__content">
+          <div>
+            <p className="overview-eyebrow">Bảng điều hành</p>
+            <h1>Tổng quan truy xuất</h1>
+            <p>Theo dõi sức khỏe mùa vụ, chất lượng và hành trình nông sản trong một không gian vận hành thống nhất.</p>
+          </div>
+          <div className="overview-hero__actions">
+            <Link to="/products">Quản lý lô</Link>
+            <Link to="/add-event">Ghi nhật ký</Link>
+          </div>
         </div>
-        <div className="overview-hero__actions">
-          <Link to="/products">Quản lý lô</Link>
-          <Link to="/add-event">Ghi nhật ký</Link>
+        <div className="overview-hero__visual" aria-label="Không gian nông nghiệp số AgriTrace">
+          <AgriLivingScene className="overview-hero__scene" />
+          <div className="overview-hero__visual-copy">
+            <span>Hệ sinh thái nông nghiệp số</span>
+            <strong>Từ vùng trồng đến người tiêu dùng</strong>
+            <small>Minh bạch · Chất lượng · Có thể xác minh</small>
+          </div>
         </div>
       </header>
 

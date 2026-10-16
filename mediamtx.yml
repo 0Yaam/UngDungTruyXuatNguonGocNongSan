@@ -1,0 +1,30 @@
+api: yes
+apiAddress: :9997
+
+# Control API is reachable only inside the Docker network because port 9997 is
+# intentionally not published by docker-compose. Camera viewers/publishers keep
+# the normal anonymous MediaMTX flow; the API container can manage pull paths.
+authMethod: internal
+authInternalUsers:
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: publish
+      - action: read
+      - action: playback
+      - action: api
+
+rtspAddress: :8554
+
+hls: yes
+hlsAddress: :8888
+hlsAllowOrigins: ['*']
+
+webrtc: yes
+webrtcAddress: :8889
+webrtcAllowOrigins: ['*']
+webrtcLocalUDPAddress: :8189
+
+paths:
+  all_others:

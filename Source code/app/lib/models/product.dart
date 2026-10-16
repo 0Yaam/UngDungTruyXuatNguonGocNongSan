@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-import 'package:app/models/live_camera.dart';
-=======
 import 'package:app/models/farming_area.dart';
->>>>>>> dan/main
+import 'package:app/models/live_camera.dart';
 
 class Product {
   final String id;
@@ -17,14 +14,9 @@ class Product {
   final List<String> images;
   final List<LiveCamera> liveCameras;
   final String? onChainBatchId;
-<<<<<<< HEAD
-  final String status; // draft | active | completed | recalled
-  final Map<String, dynamic>? farmingArea;
-=======
   final String? batchTxHash;
-  final String status; // draft | active | completed
+  final String status; // draft | active | completed | recalled
   final FarmingArea? farmingArea;
->>>>>>> dan/main
   final DateTime? cultivationTime;
   final Map<String, dynamic>? createdBy;
   final DateTime? createdAt;
@@ -66,19 +58,14 @@ class Product {
   /// Nhãn hiển thị trạng thái
   String get statusLabel {
     switch (status) {
-<<<<<<< HEAD
-      case 'active': return 'Đang sản xuất';
-      case 'completed': return 'Hoàn thành';
-      case 'recalled': return 'Đã thu hồi';
-      default: return 'Nháp';
-=======
       case 'active':
         return 'Đang sản xuất';
       case 'completed':
         return 'Hoàn thành';
+      case 'recalled':
+        return 'Đã thu hồi';
       default:
         return 'Nháp';
->>>>>>> dan/main
     }
   }
 
